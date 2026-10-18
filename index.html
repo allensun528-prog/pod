@@ -1,1203 +1,443 @@
 <!doctype html>
-
 <html lang="zh-CN">
-
 <head>
-
 <meta charset="utf-8">
-
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover">
-
 <meta name="apple-mobile-web-app-capable" content="yes">
-
 <title>角色三消合成原型</title>
-
 <style>
-
 :root{--bg:#101522;--panel:#1b2335;--line:#303c54;--text:#eef3ff;--muted:#9caac4;--accent:#78d8bd}
-
-*{box-sizing:border-box}
-
-body{margin:0;background:radial-gradient(circle at top,#202c43,#101522 55%);color:var(--text);font-family:system-ui,-apple-system,sans-serif;padding:8px;min-height:100vh;min-height:100dvh;overscroll-behavior:none}
-
-button{font:inherit;cursor:pointer;border:0;border-radius:9px;padding:8px 12px;background:var(--accent);color:#10221e;font-weight:800}
-
-button.secondary{background:#34415a;color:white}
-
-.wrap{max-width:900px;margin:auto}
-
-.panel{background:rgba(27,35,53,.96);border:1px solid var(--line);border-radius:12px;padding:10px}
-
-h1{font-size:clamp(20px,3vw,30px);margin:0 0 5px}
-
-h2{font-size:17px;margin:0 0 8px}
-
-.sub,.hint{color:var(--muted);font-size:12px;line-height:1.5}
-
-.game{display:none}
-
-.topbar{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;margin-bottom:10px}
-
-.stats{display:flex;gap:5px;flex-wrap:wrap}
-
-.stat{background:#111827;border:1px solid var(--line);border-radius:8px;padding:5px 8px;color:var(--muted);font-size:12px}
-
-.stat strong{color:white;font-size:17px;margin-left:4px}
-
-.layout{display:grid;grid-template-columns:minmax(190px,.8fr) minmax(0,1.2fr);gap:10px;align-items:start}
-
-.board-wrap{width:100%;max-width:520px;margin:auto}
-
-.board{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:4px;padding:5px;background:#0c111d;border:1px solid #34415a;border-radius:10px;touch-action:pan-y;user-select:none}
-
-.tile{position:relative;aspect-ratio:1;border:2px solid #dfe7f5;border-radius:7px;overflow:hidden;display:flex;align-items:center;justify-content:center;min-width:0;cursor:pointer;touch-action:manipulation}
-
-.tile img{width:82%;height:82%;object-fit:contain;pointer-events:none;mix-blend-mode:multiply}
-
-.fallback{width:82%;height:82%;display:flex;align-items:center;justify-content:center;border-radius:5px;background:#ffffffd9;color:#243047;font-weight:900;font-size:clamp(12px,3vw,24px)}
-
-.tile.selected{outline:3px solid #ffe08a;outline-offset:-3px;transform:scale(.94)}
-
-.tile .tier{position:absolute;bottom:1px;left:1px;border-radius:4px;padding:1px 3px;background:#101827e8;color:white;font-size:9px;font-weight:800}
-
-.buffs{position:absolute;top:1px;left:1px;display:flex;gap:2px;flex-wrap:wrap;z-index:3;pointer-events:none}
-
-.buff-icon{display:inline-flex;align-items:center;justify-content:center;min-width:14px;height:14px;padding:0 2px;border-radius:4px;background:#101827ef;color:white;font-size:9px;font-weight:900;line-height:1;white-space:nowrap}
-
-.party{display:grid;gap:8px}
-
-.party-group{border:1px solid var(--line);border-radius:9px;padding:6px;background:#121a29}
-
-.party-head{display:flex;justify-content:space-between;font-weight:800;font-size:12px;margin-bottom:5px}
-
-.party-head small{color:var(--muted);font-weight:500}
-
-.party-list{display:flex;gap:5px;flex-wrap:wrap;min-height:32px}
-
-.party-unit{position:relative;width:32px;height:32px;border:2px solid #dfe7f5;border-radius:6px;background:white}
-
-.party-unit img{width:100%;height:100%;object-fit:contain;mix-blend-mode:multiply}
-
-.party-unit .unit-meta{position:absolute;top:-7px;right:-6px;background:#111827;color:white;border:1px solid white;border-radius:5px;padding:1px 3px;font-size:9px;white-space:nowrap}
-
-.party-buffs{position:absolute;left:-2px;bottom:-5px;display:flex;gap:1px}
-
-.party-buffs .buff-icon{min-width:11px;height:11px;font-size:7px;padding:0 1px;border:1px solid white}
-
-.empty{font-size:11px;color:#71809b;align-self:center}
-
-.skill-panel{margin-top:8px;padding:9px;background:#1b2335;border:1px solid var(--line);border-radius:10px}
-
-.energy-head{display:flex;justify-content:space-between;gap:8px;font-size:12px;color:var(--muted);margin-bottom:6px}
-
-.energy-head strong{color:white;font-size:15px}
-
-.energy-track{height:10px;border-radius:999px;background:#0c111d;border:1px solid #35415a;overflow:hidden}
-
-.energy-fill{height:100%;width:0;background:linear-gradient(90deg,#78d8bd,#b7f5d5)}
-
-.skill-buttons{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:5px;margin-top:8px}
-
-.skill-btn{display:flex;flex-direction:column;align-items:center;gap:3px;min-width:0;padding:7px 2px;background:#34415a;color:white;border:1px solid #53627b;border-radius:8px}
-
-.skill-btn:disabled{opacity:.4}
-
-.skill-mark{font-size:20px;font-weight:950;color:#ffe08a}
-
-.skill-name{font-size:11px;font-weight:800}
-
-.skill-state{font-size:9px;color:#c4d0e5;font-weight:500;text-align:center}
-
-.skill-desc{font-size:10px;line-height:1.5;color:var(--muted);margin-top:7px}
-
-.legend{display:flex;gap:6px;flex-wrap:wrap;margin-top:7px;color:var(--muted);font-size:10px}
-
-.swatch{width:10px;height:10px;border-radius:3px;display:inline-block;border:1px solid #ffffff80}
-
-.log{margin-top:8px;color:#b8c5dc;font-size:12px;line-height:1.5;min-height:30px}
-
-@media(max-width:650px){
-
- .layout{grid-template-columns:1fr}
-
- .side{order:2}
-
- .board-wrap{order:1;max-width:520px}
-
- .party{grid-template-columns:repeat(2,minmax(0,1fr))}
-
- .tile{border-width:1px;border-radius:5px}
-
- .tile .tier{font-size:8px}
-
- .panel{padding:7px}
-
- .topbar{gap:5px}
-
- .topbar h1{font-size:19px}
-
- .stat{font-size:10px;padding:4px 6px}
-
- .stat strong{font-size:14px}
-
- .skill-panel{padding:7px}
-
- .skill-name{font-size:10px}
-
- .hint{font-size:10px}
-
-}
+*{box-sizing:border-box}html{overscroll-behavior:none}body{margin:0;background:radial-gradient(circle at top,#202c43,#101522 55%);color:var(--text);font-family:system-ui,-apple-system,"Segoe UI",sans-serif;padding:22px;min-height:100vh;min-height:100dvh;padding: max(10px,env(safe-area-inset-top)) max(10px,env(safe-area-inset-right)) max(10px,env(safe-area-inset-bottom)) max(10px,env(safe-area-inset-left));overscroll-behavior:none}
+button,input{font:inherit}button{cursor:pointer;border:0;border-radius:10px;padding:10px 16px;background:var(--accent);color:#10221e;font-weight:800}button.secondary{background:#34415a;color:#eef3ff}
+.wrap{max-width:820px;margin:auto}.panel{background:rgba(27,35,53,.96);border:1px solid var(--line);border-radius:16px;padding:18px;box-shadow:0 16px 40px #0003}
+h1{font-size:clamp(22px,3vw,32px);margin:0 0 8px}.sub{color:var(--muted);margin:0 0 20px}.setup{max-width:520px;margin:8vh auto}.setup label{display:block;margin:16px 0 7px;color:#c8d4e9}.setup input{width:100%;padding:12px;border-radius:10px;border:1px solid #52617a;background:#111827;color:white;font-size:18px}.error{min-height:22px;color:#ff9d9d;font-size:14px;margin-top:6px}
+.game{display:none}.topbar{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:16px}.stats{display:flex;gap:10px;flex-wrap:wrap}.stat{background:#111827;border:1px solid var(--line);border-radius:10px;padding:8px 12px;color:var(--muted)}.stat strong{color:white;font-size:20px;margin-left:5px}
+.layout{display:grid;grid-template-columns:250px minmax(0,420px);gap:16px;align-items:start;justify-content:center}.board-wrap{width:100%;max-width:420px;margin:0 auto}.board{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:5px;padding:8px;background:#0c111d;border:1px solid #34415a;border-radius:12px;touch-action:none;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
+.tile{touch-action:none;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;position:relative;aspect-ratio:1;border:2px solid #dfe7f5;border-radius:9px;overflow:hidden;background:#fff;display:flex;align-items:center;justify-content:center;min-width:0;cursor:grab;transition:transform .08s,border-color .08s}.tile:active{cursor:grabbing}.tile img{width:82%;height:82%;object-fit:contain;pointer-events:none;border-radius:5px;box-shadow:0 1px 4px #0005;mix-blend-mode:multiply}.tile .fallback{width:82%;height:82%;display:flex;align-items:center;justify-content:center;border-radius:5px;background:#ffffffd9;font-weight:900;color:#243047;font-size:clamp(12px,2vw,23px)}.buffs{position:absolute;top:1px;left:1px;display:flex;gap:2px;max-width:calc(100% - 2px);flex-wrap:wrap;z-index:3;pointer-events:none}.buff-icon{display:inline-flex;align-items:center;justify-content:center;min-width:14px;height:14px;padding:0 2px;border-radius:4px;background:#101827eF;color:#fff;font-size:9px;font-weight:900;line-height:1;box-shadow:0 1px 3px #0008;white-space:nowrap}.party-buffs{position:absolute;left:-3px;bottom:-5px;display:flex;gap:1px;z-index:3}.party-buffs .buff-icon{min-width:12px;height:12px;padding:0 1px;font-size:8px;border:1px solid #fff}.tile .tier{position:absolute;bottom:1px;left:1px;border-radius:4px;padding:1px 3px;background:#101827e8;color:#fff;font-size:9px;font-weight:800}.tile.selected{outline:3px solid #ffe08a;outline-offset:-3px;transform:scale(.95)}
+.tile.swap-anim{animation:swapPulse .22s cubic-bezier(.2,.8,.2,1)}
+.tile.match-anim{animation:matchBurst .34s ease-out both;z-index:2}
+.tile.refill-anim{animation:refillSlide .30s cubic-bezier(.2,.75,.25,1) both;animation-delay:var(--stagger,0ms)}
+.tile.pop-anim{animation:tilePop .36s cubic-bezier(.2,.8,.25,1) both;z-index:5}
+.flyer.converge{z-index:10000;will-change:transform,opacity;transform-origin:center center}
+.flyer{position:fixed;z-index:9999;pointer-events:none;border:2px solid #fff;border-radius:9px;overflow:hidden;box-shadow:0 8px 26px #0009}.flyer img{width:100%;height:100%;object-fit:cover}
+.tile.dragging{opacity:.38;transform:scale(1.06);filter:brightness(1.12)}
+@keyframes swapPulse{0%{transform:scale(.88) rotate(-3deg);filter:brightness(1.35)}65%{transform:scale(1.08) rotate(2deg)}100%{transform:scale(1);filter:brightness(1)}}
+@keyframes matchBurst{0%{transform:scale(1);opacity:1;filter:brightness(1)}25%{transform:scale(1.12);opacity:1;filter:brightness(1.9)}100%{transform:scale(.72);opacity:.12;filter:brightness(2)}}
+@keyframes refillSlide{0%{transform:translateX(22px);opacity:.2;filter:brightness(1.3)}70%{transform:translateX(-3px);opacity:1}100%{transform:translateX(0);opacity:1;filter:brightness(1)}}
+@keyframes tilePop{0%{transform:scale(.55);opacity:.25;filter:brightness(1.8)}55%{transform:scale(1.17);opacity:1;filter:brightness(1.25)}78%{transform:scale(.94)}100%{transform:scale(1);opacity:1;filter:brightness(1)}}.tier-1{background:#fff}.tier-2{background:#39b66b}.tier-3{background:#3288e8}.tier-4{background:#a65ce5}.tier-5{background:#f39b31}
+.side h2{font-size:18px;margin:0 0 10px}.party{display:grid;gap:12px}.party-group{border:1px solid var(--line);border-radius:11px;padding:9px;background:#121a29}.party-head{display:flex;align-items:center;justify-content:space-between;font-weight:800;margin-bottom:7px}.party-head small{font-weight:500;color:var(--muted)}.party-list{display:flex;gap:5px;flex-wrap:wrap;min-height:48px}.party-unit{position:relative;width:38px;height:38px;border:2px solid #dfe7f5;border-radius:7px;overflow:visible;background:#fff}.party-unit img{width:100%;height:100%;object-fit:contain;border-radius:5px;mix-blend-mode:multiply}.party-unit .unit-meta{position:absolute;top:-9px;right:-7px;background:#111827;color:white;border:1px solid #fff;border-radius:6px;padding:1px 3px;font-size:10px;white-space:nowrap}.empty{font-size:12px;color:#71809b;align-self:center}.log{margin-top:14px;color:#b8c5dc;font-size:13px;min-height:40px;line-height:1.5}.legend{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px;color:var(--muted);font-size:12px}.legend span{display:flex;align-items:center;gap:4px}.swatch{width:12px;height:12px;border-radius:3px;border:1px solid #ffffff80;display:inline-block}.hint{font-size:12px;line-height:1.6;color:var(--muted);margin-top:12px}.disabled{opacity:.5;pointer-events:none}.skill-panel{margin-top:10px;padding:10px;background:rgba(27,35,53,.96);border:1px solid var(--line);border-radius:12px}.energy-head{display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:12px;color:var(--muted);margin-bottom:6px}.energy-head strong{color:#fff;font-size:15px}.energy-track{height:10px;border-radius:999px;background:#0c111d;border:1px solid #35415a;overflow:hidden}.energy-fill{height:100%;width:0;background:linear-gradient(90deg,#78d8bd,#b7f5d5);transition:width .2s}.skill-buttons{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;margin-top:9px}.skill-btn{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;min-width:0;padding:8px 4px;background:#34415a;color:#eef3ff;border:1px solid #53627b;border-radius:9px}.skill-btn .skill-mark{font-size:19px;font-weight:950;line-height:1.1;color:#ffe08a}.skill-btn .skill-name{font-size:11px;font-weight:800}.skill-btn .skill-state{font-size:10px;color:#c4d0e5;font-weight:500}.skill-btn:disabled{opacity:.42;cursor:not-allowed}.skill-desc{font-size:11px;line-height:1.45;color:var(--muted);margin-top:7px}.buff-legend{display:flex;gap:6px;flex-wrap:wrap;margin-top:7px;font-size:10px;color:var(--muted)}.buff-legend span{display:inline-flex;align-items:center;gap:3px}
+@media(max-width:760px){body{padding: max(6px,env(safe-area-inset-top)) max(6px,env(safe-area-inset-right)) max(6px,env(safe-area-inset-bottom)) max(6px,env(safe-area-inset-left))}.wrap{max-width:none}.layout{grid-template-columns:minmax(0,.78fr) minmax(0,1.22fr);gap:7px;align-items:start}.board-wrap{max-width:100%;width:100%}.board{gap:3px;padding:4px}.tile{border-radius:5px;border-width:1px}.tile .tier{font-size:8px}.side .party{grid-template-columns:1fr}.party-unit{width:clamp(22px,5.8vw,30px);height:clamp(22px,5.8vw,30px)}.panel{padding:7px;border-radius:10px}.party-group{padding:5px}.party-head{font-size:12px}.hint{font-size:10px;line-height:1.35;margin-top:7px}.topbar{gap:6px;margin-bottom:7px}.topbar h1{font-size:clamp(16px,3.3vw,22px)}.topbar .sub{font-size:10px;line-height:1.3}.stats{gap:4px}.stat{font-size:10px;padding:4px 6px}.stat strong{font-size:14px;margin-left:3px}.topbar button{font-size:11px;padding:6px 8px}.legend{gap:4px;margin-top:6px;font-size:9px}.skill-panel{padding:7px;margin-top:6px}.skill-btn{padding:6px 2px;gap:2px}.skill-btn .skill-mark{font-size:16px}.skill-btn .skill-name{font-size:9px}.skill-btn .skill-state{font-size:9px}.skill-desc{font-size:9px}.buff-icon{min-width:11px;height:11px;font-size:8px;padding:0 1px}.swatch{width:9px;height:9px}.log{font-size:10px;min-height:24px;margin-top:6px;line-height:1.3}}
+@media (orientation:landscape) and (max-height:600px){body{padding: max(4px,env(safe-area-inset-top)) max(5px,env(safe-area-inset-right)) max(4px,env(safe-area-inset-bottom)) max(5px,env(safe-area-inset-left))}.game{min-height:calc(100dvh - 8px)}.topbar{margin-bottom:5px;flex-wrap:nowrap;min-height:34px}.topbar>div:first-child{min-width:0}.topbar h1{font-size:clamp(15px,2.8vh,20px);white-space:nowrap}.topbar .sub{font-size:9px;white-space:nowrap}.stats{flex-wrap:nowrap}.stat{white-space:nowrap;padding:3px 5px;font-size:9px}.stat strong{font-size:13px}.topbar button{white-space:nowrap;padding:5px 7px;font-size:10px}.layout{grid-template-columns:minmax(0,.82fr) minmax(0,1.18fr);gap:6px;align-items:start}.side{padding:6px}.side h2{font-size:13px;margin-bottom:5px}.side .party{grid-template-columns:repeat(2,minmax(0,1fr));gap:5px}.party-group{padding:4px;min-width:0}.party-head{font-size:10px;margin-bottom:4px}.party-head small{font-size:9px}.party-list{gap:3px;min-height:26px}.party-unit{width:clamp(19px,4.7vh,27px);height:clamp(19px,4.7vh,27px)}.empty{font-size:9px}.side .hint{font-size:9px;line-height:1.25}.board-wrap{width:min(100%,calc(100dvh - 66px));max-width:calc(100dvh - 66px);margin:0 auto}.board-wrap>.panel{padding:4px}.board{gap:2px;padding:3px;border-radius:7px}.tile{border-radius:4px}.tile img{width:78%;height:78%;border-radius:3px}.tile .tier{bottom:0;left:0;padding:0 2px;font-size:7px;border-radius:2px}.legend{font-size:8px;gap:4px;margin-top:4px}.log{font-size:9px;min-height:20px;margin-top:4px}.swatch{width:8px;height:8px}}
+@media (orientation:portrait) and (max-width:760px){.layout{grid-template-columns:1fr}.side{order:2}.board-wrap{order:1;max-width:min(100%,520px)}.side .party{grid-template-columns:repeat(2,minmax(0,1fr))}.topbar{align-items:flex-start}.topbar>div:first-child .sub{white-space:normal}}
 
 </style>
-
 </head>
-
 <body>
-
 <div class="wrap">
-
-  <section class="panel" id="setup">
-
+  <section class="panel setup" id="setup">
     <h1>角色三消合成</h1>
-
-    <p class="sub">6 × 6 棋盘 · 四种角色 · 无限步数 · 合成积累全局消除点数</p>
-
-    <button id="startBtn" style="width:100%">进入游戏</button>
-
-    <p class="hint">头像图片放在本 HTML 同一目录：icon_a.png、icon_b.png、icon_c.png、icon_d.png，以及 chara_a.png、chara_b.png、chara_c.png、chara_d.png。</p>
-
+    <p class="sub">6 × 6 棋盘 · 四种角色 · 无限步数 · 合成积累消除点数</p>
+    <div class="error" id="setupError"></div>
+    <button id="startBtn" style="width:100%;margin-top:8px">进入游戏</button>
+    <p class="hint">头像素材请与本 HTML 放在同一文件夹：icon_a.png、icon_b.png、icon_c.png、icon_d.png，以及 chara_a.png、chara_b.png、chara_c.png、chara_d.png。</p>
   </section>
 
   <section class="game" id="game">
-
     <div class="topbar">
-
-      <div>
-
-        <h1>角色三消合成</h1>
-
-        <div class="sub">依次点击两个头像交换；也可拖动交换。</div>
-
-      </div>
-
-      <div class="stats">
-
-        <div class="stat">回合<strong id="turnCount">0</strong></div>
-
-        <div class="stat">上阵<strong id="partyCount">0</strong></div>
-
-      </div>
-
+      <div><h1>角色三消合成</h1><p class="sub" style="margin:4px 0 0">拖动或依次点击两个头像交换；没有步数上限。</p></div>
+      <div class="stats"><div class="stat">回合<strong id="turnCount">0</strong></div><div class="stat">上阵人数<strong id="partyCount">0</strong></div></div>
       <button class="secondary" id="restartBtn">重新开始</button>
-
     </div>
-
     <div class="layout">
-
       <aside class="panel side">
-
         <h2>上阵角色</h2>
-
         <div class="party" id="party"></div>
-
-        <p class="hint">每条被消除的横线或竖线各上阵一名角色，优先选择该线阶级最高的头像。该消除线所有头像的 Buff 取并集，同类型只保留一个。</p>
-
+        <p class="hint">每条被消除的横线或竖线各上阵 1 名角色：优先选择该线中阶级最高者。棋子携带的防御、生命、攻击 Buff 会合并到上阵角色，同类只保留一个。</p>
       </aside>
-
       <div class="board-wrap">
-
-        <div class="panel">
-
-          <div id="board" class="board"></div>
-
-        </div>
-
+        <div class="panel" style="padding:8px"><div id="board" class="board" aria-label="6乘6三消棋盘"></div></div>
         <div class="legend">
-
-          <span><i class="swatch" style="background:#e7edf6"></i>1阶</span>
-
-          <span><i class="swatch" style="background:#39b66b"></i>2阶</span>
-
-          <span><i class="swatch" style="background:#3288e8"></i>3阶</span>
-
-          <span><i class="swatch" style="background:#a65ce5"></i>4阶</span>
-
-          <span><i class="swatch" style="background:#f39b31"></i>5阶</span>
-
+          <span><i class="swatch tier-1"></i>1阶</span><span><i class="swatch tier-2"></i>2阶</span><span><i class="swatch tier-3"></i>3阶</span><span><i class="swatch tier-4"></i>4阶</span><span><i class="swatch tier-5"></i>5阶</span>
         </div>
-
-        <section class="skill-panel">
-
-          <div class="energy-head">
-
-            <span>全局消除点数</span>
-
-            <strong><span id="energyValue">0</span> / 300</strong>
-
-          </div>
-
+        <section class="skill-panel" aria-label="盘面技能">
+          <div class="energy-head"><span>全局消除点数</span><strong><span id="energyValue">0</span> / 300</strong></div>
           <div class="energy-track"><div class="energy-fill" id="energyFill"></div></div>
-
           <div class="skill-buttons">
-
-            <button class="skill-btn" id="skillA">
-
-              <span class="skill-mark">甲</span>
-
-              <span class="skill-name">随机升阶</span>
-
-              <span class="skill-state" id="skillAState">100点·就绪</span>
-
-            </button>
-
-            <button class="skill-btn" id="skillB">
-
-              <span class="skill-mark">乙</span>
-
-              <span class="skill-name">二阶补充</span>
-
-              <span class="skill-state" id="skillBState">100点·就绪</span>
-
-            </button>
-
-            <button class="skill-btn" id="skillC">
-
-              <span class="skill-mark">丙</span>
-
-              <span class="skill-name">前排增援</span>
-
-              <span class="skill-state" id="skillCState">100点·就绪</span>
-
-            </button>
-
+            <button class="skill-btn" id="skillA" type="button"><span class="skill-mark">甲</span><span class="skill-name">随机升阶</span><span class="skill-state" id="skillAState">100点 · 就绪</span></button>
+            <button class="skill-btn" id="skillB" type="button"><span class="skill-mark">乙</span><span class="skill-name">二阶补充</span><span class="skill-state" id="skillBState">100点 · 就绪</span></button>
+            <button class="skill-btn" id="skillC" type="button"><span class="skill-mark">丙</span><span class="skill-name">前排增援</span><span class="skill-state" id="skillCState">100点 · 就绪</span></button>
           </div>
-
-          <div class="skill-desc">
-
-            甲：随机选择最多 5 个棋子，各升一阶。<br>
-
-            乙：接下来补充的 10 个棋子均为 2 阶。<br>
-
-            丙：接下来补充的 15 个棋子中，A/B 出现权重翻倍。<br>
-
-            每个技能独立冷却 6 回合。
-
-          </div>
-
-          <div class="legend">
-
-            <span><i class="buff-icon">防</i>四连：防御</span>
-
-            <span><i class="buff-icon">生命</i>五连：生命</span>
-
-            <span><i class="buff-icon">攻</i>横纵交叉：攻击</span>
-
-          </div>
-
+          <div class="skill-desc">甲：随机选择最多 5 个棋子升一阶。乙：之后补充的 10 个棋子均为 2 阶。丙：之后补充的 15 个棋子中，A/B 出现概率翻倍（权重 2:2:1:1）。每个技能独立冷却 6 回合。</div>
+          <div class="buff-legend"><span><i class="buff-icon">防</i>四连：防御</span><span><i class="buff-icon">生命</i>五连：生命</span><span><i class="buff-icon">攻</i>横纵交叉：攻击</span></div>
         </section>
-
         <div class="log" id="log">开始交换头像吧。</div>
-
       </div>
-
     </div>
-
   </section>
-
 </div>
-
 <script>
-
 (() => {
-
-  const SIZE = 6;
-
-  const N = 4;
-
-  const names = ['A','B','C','D'];
-
-  const iconFiles = ['icon_a.png','icon_b.png','icon_c.png','icon_d.png'];
-
-  const charaFiles = ['chara_a.png','chara_b.png','chara_c.png','chara_d.png'];
-
-  const colors = ['#e7edf6','#39b66b','#3288e8','#a65ce5','#f39b31'];
-
-  const $ = id => document.getElementById(id);
-
-  const rand = n => Math.floor(Math.random() * n);
-
-  const idx = (r,c) => r * SIZE + c;
-
-  const pos = i => ({r:Math.floor(i/SIZE),c:i%SIZE});
-
-  const wait = ms => new Promise(resolve => setTimeout(resolve,ms));
-
-  const buffLabels = {def:'防',hp:'生命',atk:'攻'};
-
-  let board = [];
-
-  let party = [[],[],[],[]];
-
-  let selected = null;
-
-  let busy = false;
-
-  let turnCount = 0;
-
-  let energy = 0;
-
-  let cooldowns = {A:0,B:0,C:0};
-
-  let tier2Refills = 0;
-
-  let frontBoostRefills = 0;
-
-  const makeTile = (chara=rand(N),tier=1,buffs=[]) =>
-
-    ({chara,tier,buffs:[...buffs]});
-
-  const copyTile = t => ({...t,buffs:[...(t.buffs||[])]});
-
-  const uniqueBuffs = list => [...new Set((list||[]).filter(k=>buffLabels[k]))];
-
-  function addImage(container,src,alt){
-
-    const img = document.createElement('img');
-
-    img.src = src;
-
-    img.alt = alt;
-
-    img.onerror = () => {
-
-      img.remove();
-
-      if(container.querySelector('.fallback')) return;
-
-      const f = document.createElement('span');
-
-      f.className = 'fallback';
-
-      f.textContent = alt;
-
-      container.appendChild(f);
-
-    };
-
-    container.appendChild(img);
-
-  }
-
-  function badgeRow(buffs,cls='buffs'){
-
-    const root = document.createElement('span');
-
-    root.className = cls;
-
-    uniqueBuffs(buffs).forEach(key=>{
-
-      const b = document.createElement('span');
-
-      b.className = 'buff-icon';
-
-      b.textContent = buffLabels[key];
-
-      root.appendChild(b);
-
-    });
-
-    return root;
-
-  }
-
-  function createsTriple(i,t){
-
-    const {r,c} = pos(i);
-
-    return (c>=2 && board[idx(r,c-1)]?.chara===t.chara &&
-
-      board[idx(r,c-2)]?.chara===t.chara) ||
-
-      (r>=2 && board[idx(r-1,c)]?.chara===t.chara &&
-
-      board[idx(r-2,c)]?.chara===t.chara);
-
-  }
-
+  const SIZE=6, N=4, names=['A','B','C','D'];
+  const iconFiles=['icon_a.png','icon_b.png','icon_c.png','icon_d.png'];
+  const charaFiles=['chara_a.png','chara_b.png','chara_c.png','chara_d.png'];
+  const tierColors=['#e7edf6','#39b66b','#3288e8','#a65ce5','#f39b31'];
+  const $=id=>document.getElementById(id);
+  let board=[],party=[[],[],[],[]],busy=false,selected=null,dragFrom=null,swapAnim=new Set(),matchAnim=new Set(),refillAnim=new Set(),popAnim=new Set(),refillDelay=new Map(),touchDrag=null,suppressClick=false;
+  let turnCount=0,energy=0,cooldowns={A:0,B:0,C:0},tier2Refills=0,frontBoostRefills=0;
+  const wait=ms=>new Promise(resolve=>setTimeout(resolve,ms));
+  const rand=n=>Math.floor(Math.random()*n);
+  const makeTile=(chara=rand(N),tier=1,buffs=[])=>({chara,tier,buffs:[...buffs]});
+  const idx=(r,c)=>r*SIZE+c;
+  const pos=i=>({r:Math.floor(i/SIZE),c:i%SIZE});
+  const isValid=(r,c)=>r>=0&&r<SIZE&&c>=0&&c<SIZE;
+  const copyTile=t=>({...t,buffs:[...(t.buffs||[])]});
+  function image(src,alt){const im=document.createElement('img');im.src=src;im.alt=alt;im.onerror=()=>im.remove();return im}
   function initialBoard(){
-
-    board = [];
-
+    // Rejection sampling prevents starting horizontal/vertical triples.
+    board=[];
     for(let i=0;i<SIZE*SIZE;i++){
-
       let t,tries=0;
-
       do{
-
-        t = makeTile();
-
-        tries++;
-
+        t=makeTile(rand(N),1);tries++;
       }while(tries<100 && createsTriple(i,t));
-
       board.push(t);
-
     }
-
   }
-
+  const buffLabels={def:'防',hp:'生命',atk:'攻'};
+  function uniqueBuffs(list){return [...new Set((list||[]).filter(k=>buffLabels[k]))]}
+  function buffBadges(buffs,cls='buffs'){
+    const root=document.createElement('span');root.className=cls;
+    uniqueBuffs(buffs).forEach(key=>{const badge=document.createElement('span');badge.className='buff-icon';badge.textContent=buffLabels[key];badge.title=({def:'防御 Buff',hp:'生命 Buff',atk:'攻击 Buff'})[key];root.appendChild(badge)});
+    return root;
+  }
   function makeRefillTile(){
-
     let chara;
-
     if(frontBoostRefills>0){
-
-      const roll = Math.random()*6;
-
-      chara = roll<2 ? 0 : roll<4 ? 1 : roll<5 ? 2 : 3;
-
+      // A/B 的权重各为 2，C/D 各为 1：概率分别为 1/3、1/3、1/6、1/6。
+      const roll=Math.random()*6;
+      chara=roll<2?0:roll<4?1:roll<5?2:3;
       frontBoostRefills--;
-
-    }else{
-
-      chara = rand(N);
-
-    }
-
-    let tier = 1;
-
-    if(tier2Refills>0){
-
-      tier = 2;
-
-      tier2Refills--;
-
-    }
-
+    }else chara=rand(N);
+    const tier=tier2Refills>0?2:1;
+    if(tier2Refills>0)tier2Refills--;
     return makeTile(chara,tier);
-
   }
-
   function updateSkillUI(){
-
-    $('energyValue').textContent = energy;
-
-    $('energyFill').style.width = (energy/300*100)+'%';
-
-    const defs = [
-
-      ['A','skillA','skillAState'],
-
-      ['B','skillB','skillBState'],
-
-      ['C','skillC','skillCState']
-
-    ];
-
+    $('energyValue').textContent=energy;
+    $('energyFill').style.width=(energy/300*100)+'%';
+    const defs=[['A','skillA','skillAState'],['B','skillB','skillBState'],['C','skillC','skillCState']];
     defs.forEach(([key,btn,state])=>{
-
-      $(state).textContent = cooldowns[key]>0
-
-        ? `100点·冷却 ${cooldowns[key]}`
-
-        : '100点·就绪';
-
-      $(btn).disabled = busy || energy<100 || cooldowns[key]>0 ||
-
-        (key==='A' && !board.some(t=>t.tier<5));
-
+      $(state).textContent=cooldowns[key]>0?`100点 · 冷却 ${cooldowns[key]}`:'100点 · 就绪';
+      $(btn).disabled=busy||energy<100||cooldowns[key]>0||(key==='A'&&!board.some(t=>t.tier<5));
     });
-
   }
-
-  function awardProgress(groups){
-
-    let gained = 0;
-
-    groups.forEach(g=>{
-
-      const tiles = [...g.cells].map(i=>board[i]).filter(Boolean);
-
-      if(!tiles.length) return;
-
-      const lengthBonus = g.lines.reduce(
-
-        (s,line)=>s+Math.max(0,line.cells.length-3)*2,0
-
-      );
-
-      const tierBonus = tiles.reduce(
-
-        (s,t)=>s+Math.max(0,t.tier-1),0
-
-      );
-
-      const crossBonus = g.h.length && g.v.length ? 5 : 0;
-
-      gained += 10 + lengthBonus + tierBonus + crossBonus;
-
-    });
-
-    energy = Math.min(300,energy+gained);
-
+  function awardProgress(removedCount){
+    // 规则：实际消除多少个独立棋子，就获得多少点；交叉格只计一次。
+    const before=energy;
+    energy=Math.min(300,energy+removedCount);
     updateSkillUI();
-
-    return gained;
-
+    return energy-before;
   }
-
   function castSkill(key){
-
-    if(busy || energy<100 || cooldowns[key]>0) return;
-
+    if(busy||energy<100||cooldowns[key]>0)return;
     if(key==='A'){
-
-      const candidates = board
-
-        .map((tile,index)=>({tile,index}))
-
-        .filter(x=>x.tile.tier<5);
-
-      if(!candidates.length){
-
-        $('log').textContent = '盘面没有可升阶的棋子。';
-
-        return;
-
-      }
-
-      for(let i=candidates.length-1;i>0;i--){
-
-        const j = rand(i+1);
-
-        [candidates[i],candidates[j]] = [candidates[j],candidates[i]];
-
-      }
-
-      const picked = candidates.slice(0,Math.min(5,candidates.length));
-
-      picked.forEach(x=>x.tile.tier=Math.min(5,x.tile.tier+1));
-
-      energy -= 100;
-
-      cooldowns.A = 6;
-
-      render();
-
-      $('log').textContent = `发动甲：随机提升了 ${picked.length} 个棋子的阶级。`;
-
+      const candidates=board.map((tile,index)=>({tile,index})).filter(x=>x.tile.tier<5);
+      if(!candidates.length){$('log').textContent='盘面没有可升阶的棋子，技能未消耗。';return;}
+      for(let i=candidates.length-1;i>0;i--){const j=rand(i+1);[candidates[i],candidates[j]]=[candidates[j],candidates[i]];}
+      const picked=candidates.slice(0,Math.min(5,candidates.length));
+      picked.forEach(x=>{x.tile.tier=Math.min(5,x.tile.tier+1)});
+      energy-=100;cooldowns.A=6;render();$('log').textContent=`发动甲：随机提升了 ${picked.length} 个棋子的阶级。`;
     }else if(key==='B'){
-
-      tier2Refills += 10;
-
-      energy -= 100;
-
-      cooldowns.B = 6;
-
-      $('log').textContent = '发动乙：接下来补充的 10 个棋子均为 2 阶。';
-
+      tier2Refills+=10;energy-=100;cooldowns.B=6;render();$('log').textContent='发动乙：接下来补充的 10 个棋子均为 2 阶。';
     }else if(key==='C'){
-
-      frontBoostRefills += 15;
-
-      energy -= 100;
-
-      cooldowns.C = 6;
-
-      $('log').textContent = '发动丙：接下来补充的 15 个棋子中，A/B 权重翻倍。';
-
+      frontBoostRefills+=15;energy-=100;cooldowns.C=6;render();$('log').textContent='发动丙：接下来补充的 15 个棋子，A/B 权重翻倍。';
     }
-
     updateSkillUI();
-
   }
-
-  function tickCooldowns(){
-
-    Object.keys(cooldowns).forEach(k=>{
-
-      if(cooldowns[k]>0) cooldowns[k]--;
-
-    });
-
-    updateSkillUI();
-
+  function tickCooldowns(){Object.keys(cooldowns).forEach(k=>{if(cooldowns[k]>0)cooldowns[k]--});updateSkillUI()}
+  function createsTriple(i,t){
+    const {r,c}=pos(i);
+    return (c>=2&&board[idx(r,c-1)]?.chara===t.chara&&board[idx(r,c-2)]?.chara===t.chara)
+      ||(r>=2&&board[idx(r-1,c)]?.chara===t.chara&&board[idx(r-2,c)]?.chara===t.chara);
   }
-
   function render(){
-
-    const root = $('board');
-
-    root.innerHTML = '';
-
+    const root=$('board');root.innerHTML='';
     board.forEach((t,i)=>{
-
-      const cell = document.createElement('div');
-
-      cell.className = 'tile'+(selected===i?' selected':'');
-
-      cell.dataset.index = i;
-
-      cell.style.background = colors[t.tier-1];
-
-      cell.style.borderColor = colors[t.tier-1];
-
-      addImage(cell,iconFiles[t.chara],names[t.chara]);
-
-      if(t.buffs.length) cell.appendChild(badgeRow(t.buffs));
-
-      const tier = document.createElement('span');
-
-      tier.className = 'tier';
-
-      tier.textContent = `${t.tier}阶`;
-
-      cell.appendChild(tier);
-
-      cell.addEventListener('click',()=>{
-
-        if(busy) return;
-
-        if(selected===null){
-
-          selected=i;
-
-          render();
-
-        }else if(selected===i){
-
-          selected=null;
-
-          render();
-
-        }else{
-
-          const from=selected;
-
-          selected=null;
-
-          swapAction(from,i);
-
-        }
-
-      });
-
-      cell.draggable = true;
-
-      cell.addEventListener('dragstart',e=>{
-
-        if(busy){e.preventDefault();return;}
-
-        e.dataTransfer.setData('text/plain',String(i));
-
-      });
-
-      cell.addEventListener('dragover',e=>e.preventDefault());
-
-      cell.addEventListener('drop',e=>{
-
+      const cell=document.createElement('div');
+      cell.className=`tile tier-${t.tier}`+(selected===i?' selected':'')+(swapAnim.has(i)?' swap-anim':'')+(matchAnim.has(i)?' match-anim':'')+(refillAnim.has(i)?' refill-anim':'')+(popAnim.has(i)?' pop-anim':'');
+      if(refillAnim.has(i))cell.style.setProperty('--stagger',`${refillDelay.get(i)||0}ms`);
+      cell.dataset.index=i;
+      cell.style.background=tierColors[t.tier-1];
+      cell.style.borderColor=['#c5d0e0','#39b66b','#3288e8','#a65ce5','#f39b31'][t.tier-1];
+      cell.style.boxShadow=`inset 0 0 0 3px ${['#c5d0e0','#39b66b','#3288e8','#a65ce5','#f39b31'][t.tier-1]},0 1px 3px #0005`;
+      const im=image(iconFiles[t.chara],names[t.chara]);cell.appendChild(im);
+      if(!im.parentNode){} // failed image falls back to letter below via onerror listener
+      im.onerror=()=>{im.remove();const f=document.createElement('span');f.className='fallback';f.textContent=names[t.chara];cell.appendChild(f)};
+      if(t.buffs?.length)cell.appendChild(buffBadges(t.buffs));
+      const tier=document.createElement('span');tier.className='tier';tier.textContent=`${t.tier}阶`;cell.appendChild(tier);
+      cell.draggable=true;
+      cell.addEventListener('dragstart',e=>{if(busy){e.preventDefault();return}dragFrom=i;cell.classList.add('dragging');e.dataTransfer.setData('text/plain',String(i));e.dataTransfer.effectAllowed='move'});
+      cell.addEventListener('dragend',()=>{cell.classList.remove('dragging');dragFrom=null});
+      cell.addEventListener('dragover',e=>{e.preventDefault()});
+      cell.addEventListener('drop',e=>{e.preventDefault();const from=dragFrom??Number(e.dataTransfer.getData('text/plain'));dragFrom=null;swapAction(from,i)});
+      // iOS Safari does not consistently support native HTML drag-and-drop on touch screens.
+      cell.addEventListener('pointerdown',e=>{
+        if(e.pointerType!=='touch'||busy)return;
         e.preventDefault();
-
-        const from=Number(e.dataTransfer.getData('text/plain'));
-
-        if(Number.isInteger(from)) swapAction(from,i);
-
+        const rect=cell.getBoundingClientRect();
+        touchDrag={from:i,startX:e.clientX,startY:e.clientY,moved:false,ghost:null,offsetX:e.clientX-rect.left,offsetY:e.clientY-rect.top};
+        cell.setPointerCapture?.(e.pointerId);
       });
-
+      cell.addEventListener('pointermove',e=>{
+        if(!touchDrag||touchDrag.from!==i)return;
+        e.preventDefault();
+        if(!touchDrag.moved&&Math.hypot(e.clientX-touchDrag.startX,e.clientY-touchDrag.startY)<7)return;
+        if(!touchDrag.moved){touchDrag.moved=true;const rect=cell.getBoundingClientRect();const ghost=cell.cloneNode(true);ghost.classList.remove('selected','swap-anim','match-anim','refill-anim');ghost.classList.add('flyer');ghost.style.position='fixed';ghost.style.left=rect.left+'px';ghost.style.top=rect.top+'px';ghost.style.width=rect.width+'px';ghost.style.height=rect.height+'px';ghost.style.opacity='.72';ghost.style.transform='scale(1.08)';document.body.appendChild(ghost);touchDrag.ghost=ghost;cell.style.opacity='.28'}
+        if(touchDrag.ghost){touchDrag.ghost.style.left=(e.clientX-touchDrag.offsetX)+'px';touchDrag.ghost.style.top=(e.clientY-touchDrag.offsetY)+'px'}
+        e.preventDefault();
+      });
+      cell.addEventListener('pointerup',e=>{
+        if(!touchDrag||touchDrag.from!==i)return;
+        const drag=touchDrag;touchDrag=null;
+        if(drag.ghost)drag.ghost.remove();cell.style.opacity='';
+        if(drag.moved){suppressClick=true;const target=document.elementFromPoint(e.clientX,e.clientY)?.closest('.tile');if(target){const to=Number(target.dataset.index);if(Number.isInteger(to)&&to!==drag.from)swapAction(drag.from,to)}setTimeout(()=>{suppressClick=false},80)}
+      });
+      cell.addEventListener('pointercancel',()=>{if(touchDrag&&touchDrag.from===i){touchDrag.ghost?.remove();touchDrag=null;cell.style.opacity=''}});
+      // Click/tap two cells remains available as an alternative to dragging.
+      cell.addEventListener('click',()=>{if(suppressClick||busy)return;if(selected===null){selected=i;render()}else if(selected===i){selected=null;render()}else{const from=selected;selected=null;swapAction(from,i)}});
       root.appendChild(cell);
-
     });
-
-    $('turnCount').textContent = turnCount;
-
-    $('partyCount').textContent = party.reduce((s,a)=>s+a.length,0);
-
-    renderParty();
-
-    updateSkillUI();
-
+    $('turnCount').textContent=turnCount;
+    $('partyCount').textContent=party.reduce((s,a)=>s+a.length,0);
+    renderParty();updateSkillUI();
+    root.classList.remove('disabled');
   }
-
   function renderParty(){
-
-    const root = $('party');
-
-    root.innerHTML = '';
-
+    const root=$('party');root.innerHTML='';
     party.forEach((arr,ch)=>{
-
-      const group = document.createElement('div');
-
-      group.className = 'party-group';
-
-      group.dataset.party = ch;
-
-      const head = document.createElement('div');
-
-      head.className = 'party-head';
-
-      head.innerHTML = `<span>${names[ch]} 角色</span><small>${arr.length}名</small>`;
-
-      group.appendChild(head);
-
-      const list = document.createElement('div');
-
-      list.className = 'party-list';
-
-      if(!arr.length){
-
-        const empty = document.createElement('span');
-
-        empty.className = 'empty';
-
-        empty.textContent = '尚未上阵';
-
-        list.appendChild(empty);
-
-      }
-
+      const group=document.createElement('div');group.className='party-group';
+      group.dataset.party=ch;const head=document.createElement('div');head.className='party-head';head.innerHTML=`<span>${names[ch]} 角色</span><small>${arr.length} 名</small>`;group.appendChild(head);
+      const list=document.createElement('div');list.className='party-list';
+      if(!arr.length){const empty=document.createElement('span');empty.className='empty';empty.textContent='尚未上阵';list.appendChild(empty)}
       arr.forEach(t=>{
-
-        const unit = document.createElement('div');
-
-        unit.className = 'party-unit';
-
-        unit.style.background = colors[t.tier-1];
-
-        addImage(unit,charaFiles[ch],names[ch]);
-
-        if(t.buffs.length) unit.appendChild(badgeRow(t.buffs,'party-buffs'));
-
-        const meta = document.createElement('span');
-
-        meta.className = 'unit-meta';
-
-        meta.textContent = `${t.tier}阶`;
-
-        unit.appendChild(meta);
-
-        list.appendChild(unit);
-
+        const unit=document.createElement('div');unit.className='party-unit';unit.style.background=tierColors[t.tier-1];
+        const im=image(charaFiles[ch],names[ch]);im.onerror=()=>{im.remove();const f=document.createElement('span');f.className='fallback';f.textContent=names[ch];unit.appendChild(f)};unit.appendChild(im);
+        if(t.buffs?.length)unit.appendChild(buffBadges(t.buffs,'party-buffs'));
+        const meta=document.createElement('span');meta.className='unit-meta';meta.textContent=`${t.tier}阶`;unit.appendChild(meta);list.appendChild(unit);
       });
-
-      group.appendChild(list);
-
-      root.appendChild(group);
-
+      group.appendChild(list);root.appendChild(group);
     });
-
   }
-
   function findLines(){
-
     const h=[],v=[];
-
-    for(let r=0;r<SIZE;r++){
-
-      let c=0;
-
-      while(c<SIZE){
-
-        let e=c+1;
-
-        while(e<SIZE && board[idx(r,e)].chara===board[idx(r,c)].chara) e++;
-
-        if(e-c>=3){
-
-          h.push({type:'h',cells:Array.from({length:e-c},(_,k)=>idx(r,c+k))});
-
-        }
-
-        c=e;
-
-      }
-
-    }
-
-    for(let c=0;c<SIZE;c++){
-
-      let r=0;
-
-      while(r<SIZE){
-
-        let e=r+1;
-
-        while(e<SIZE && board[idx(e,c)].chara===board[idx(r,c)].chara) e++;
-
-        if(e-r>=3){
-
-          v.push({type:'v',cells:Array.from({length:e-r},(_,k)=>idx(r+k,c))});
-
-        }
-
-        r=e;
-
-      }
-
-    }
-
+    for(let r=0;r<SIZE;r++){let c=0;while(c<SIZE){let e=c+1;while(e<SIZE&&board[idx(r,e)].chara===board[idx(r,c)].chara)e++;if(e-c>=3)h.push({type:'h',cells:Array.from({length:e-c},(_,k)=>idx(r,c+k))});c=e}}
+    for(let c=0;c<SIZE;c++){let r=0;while(r<SIZE){let e=r+1;while(e<SIZE&&board[idx(e,c)].chara===board[idx(r,c)].chara)e++;if(e-r>=3)v.push({type:'v',cells:Array.from({length:e-r},(_,k)=>idx(r+k,c))});r=e}}
     return {h,v};
-
   }
-
   function groupsFromLines(lines){
-
-    const all=[
-
-      ...lines.h.map(x=>({...x,kind:'h'})),
-
-      ...lines.v.map(x=>({...x,kind:'v'}))
-
-    ];
-
+    // Merge crossing/overlapping runs into connected components.
+    const all=[...lines.h.map(x=>({...x,kind:'h'})),...lines.v.map(x=>({...x,kind:'v'}))];
     const parent=all.map((_,i)=>i);
-
     const root=x=>parent[x]===x?x:(parent[x]=root(parent[x]));
-
-    const join=(a,b)=>{
-
-      a=root(a);b=root(b);
-
-      if(a!==b) parent[b]=a;
-
-    };
-
-    for(let i=0;i<all.length;i++){
-
-      for(let j=i+1;j<all.length;j++){
-
-        if(all[i].cells.some(x=>all[j].cells.includes(x))) join(i,j);
-
-      }
-
+    const join=(a,b)=>{a=root(a);b=root(b);if(a!==b)parent[b]=a};
+    for(let i=0;i<all.length;i++)for(let j=i+1;j<all.length;j++){
+      if(all[i].cells.some(x=>all[j].cells.includes(x)))join(i,j);
     }
-
     const map=new Map();
-
-    all.forEach((line,i)=>{
-
-      const k=root(i);
-
-      if(!map.has(k)) map.set(k,{h:[],v:[],cells:new Set(),lines:[]});
-
-      const g=map.get(k);
-
-      g[line.kind].push(line);
-
-      line.cells.forEach(x=>g.cells.add(x));
-
-      g.lines.push(line);
-
-    });
-
+    all.forEach((line,i)=>{const k=root(i);if(!map.has(k))map.set(k,{h:[],v:[],cells:new Set(),lines:[]});const g=map.get(k);g[line.kind].push(line);line.cells.forEach(x=>g.cells.add(x));g.lines.push(line)});
     return [...map.values()];
-
   }
-
-  function mergedTile(g){
-
-    const tiles=[...g.cells].map(i=>board[i]).filter(Boolean);
-
-    if(!tiles.length) return makeTile();
-
-    const tiers=tiles.map(t=>t.tier);
-
-    const max=Math.max(...tiers);
-
-    const same=tiers.every(x=>x===tiers[0]);
-
-    const cross=g.h.length>0 && g.v.length>0;
-
+  function mergedTile(group){
+    const tiles=[...group.cells].map(i=>board[i]).filter(Boolean);
+    if(!tiles.length)return makeTile();
+    const tiers=tiles.map(t=>t.tier),max=Math.max(...tiers),same=tiers.every(x=>x===tiers[0]);
+    const cross=group.h.length>0&&group.v.length>0;
     let tier;
-
-    if(same) tier=Math.min(5,tiers[0]+(cross?2:1));
-
+    if(same)tier=Math.min(5,tiers[0]+(cross?2:1));
     else tier=Math.min(5,max+(cross?1:0));
-
-    const buffs=[];
-
-    if(g.lines.some(line=>line.cells.length===4)) buffs.push('def');
-
-    if(g.lines.some(line=>line.cells.length>=5)) buffs.push('hp');
-
-    if(cross) buffs.push('atk');
-
-    return {
-
-      chara:tiles[0].chara,
-
-      tier,
-
-      buffs:uniqueBuffs(buffs)
-
-    };
-
+    // 新生成棋子继承本次消除中所有已有 Buff 的类型并集，再叠加形状奖励。
+    // 同一种 Buff 只保留一个，避免合成后出现重复图标。
+    const buffs=tiles.flatMap(t=>t.buffs||[]);
+    if(group.lines.some(line=>line.cells.length===4))buffs.push('def');
+    if(group.lines.some(line=>line.cells.length>=5))buffs.push('hp');
+    if(cross)buffs.push('atk');
+    return {chara:tiles[0].chara,tier,buffs:uniqueBuffs(buffs)};
   }
-
-  function collectPartyForLines(g){
-
-    return g.lines.map(line=>{
-
-      const candidates=line.cells
-
-        .map(i=>({tile:board[i],index:i}))
-
-        .filter(x=>x.tile)
-
-        .sort((a,b)=>b.tile.tier-a.tile.tier);
-
-      const best=candidates[0];
-
-      const buffs=uniqueBuffs(
-
-        line.cells.flatMap(i=>board[i]?.buffs||[])
-
-      );
-
-      return best ? {
-
-        tile:{...copyTile(best.tile),buffs},
-
-        sourceIndex:best.index
-
-      } : null;
-
+  function collectPartyForLines(group){
+    // 每条独立消除线各上阵一名角色；该线所有被消除头像的 Buff 取并集，同类型只保留一个。
+    return group.lines.map(line=>{
+      const best=line.cells.map(i=>({tile:board[i],index:i})).filter(x=>x.tile).sort((a,b)=>b.tile.tier-a.tile.tier)[0];
+      const buffs=uniqueBuffs(line.cells.flatMap(i=>board[i]?.buffs||[]));
+      return best?{tile:{...copyTile(best.tile),buffs},sourceIndex:best.index}:null;
     }).filter(Boolean);
-
+  }
+  async function flyToParty(entry){
+    const source=$('board').querySelector(`[data-index="${entry.sourceIndex}"]`);
+    const target=$('party').querySelector(`[data-party="${entry.tile.chara}"]`);
+    if(!source||!target){party[entry.tile.chara].push(copyTile(entry.tile));renderParty();return}
+    const a=source.getBoundingClientRect(),b=target.getBoundingClientRect();
+    const flyer=document.createElement('div');flyer.className='flyer';flyer.style.left=`${a.left}px`;flyer.style.top=`${a.top}px`;flyer.style.width=`${a.width}px`;flyer.style.height=`${a.height}px`;flyer.style.background=tierColors[entry.tile.tier-1];
+    const im=image(charaFiles[entry.tile.chara],names[entry.tile.chara]);flyer.appendChild(im);document.body.appendChild(flyer);
+    const dx=(b.left+b.width/2)-(a.left+a.width/2),dy=(b.top+b.height/2)-(a.top+a.height/2);
+    flyer.animate([{transform:'translate(0,0) scale(1)',opacity:1},{transform:`translate(${dx}px,${dy}px) scale(.35)`,opacity:.25}],{duration:430,easing:'cubic-bezier(.2,.75,.25,1)'});
+    await wait(430);flyer.remove();party[entry.tile.chara].push(copyTile(entry.tile));renderParty();
+  }
+  async function animateConvergence(groups,created){
+    const root=$('board');
+    const motions=[];
+    created.forEach(item=>{
+      const target=root.querySelector(`[data-index="${item.place}"]`);
+      if(!target)return;
+      const targetRect=target.getBoundingClientRect();
+      [...item.group.cells].forEach(sourceIndex=>{
+        const source=root.querySelector(`[data-index="${sourceIndex}"]`);
+        if(!source)return;
+        const rect=source.getBoundingClientRect();
+        const flyer=source.cloneNode(true);
+        flyer.className='flyer converge';
+        flyer.style.left=`${rect.left}px`;
+        flyer.style.top=`${rect.top}px`;
+        flyer.style.width=`${rect.width}px`;
+        flyer.style.height=`${rect.height}px`;
+        flyer.style.background=board[sourceIndex] ? tierColors[board[sourceIndex].tier-1] : '#fff';
+        document.body.appendChild(flyer);
+        const dx=targetRect.left+targetRect.width/2-(rect.left+rect.width/2);
+        const dy=targetRect.top+targetRect.height/2-(rect.top+rect.height/2);
+        const delay=Math.min(90,Math.abs(dx+dy)*.08);
+        const animation=flyer.animate([
+          {transform:'translate(0,0) scale(1)',opacity:1,filter:'brightness(1)'},
+          {transform:`translate(${dx*.72}px,${dy*.72}px) scale(.72)`,opacity:1,filter:'brightness(1.6)',offset:.68},
+          {transform:`translate(${dx}px,${dy}px) scale(.18)`,opacity:0,filter:'brightness(2)'}
+        ],{duration:330,delay,easing:'cubic-bezier(.2,.75,.2,1)',fill:'forwards'});
+        motions.push(animation.finished.catch(()=>{}).then(()=>flyer.remove()));
+      });
+    });
+    await Promise.all(motions);
   }
 
   async function resolveMatches(playerMove=false,targetIndex=0){
-
-    let chain=0;
-
-    let totalGained=0;
-
+    let chain=0,totalGained=0;
     while(chain<30){
-
       const lines=findLines();
-
-      if(!lines.h.length&&!lines.v.length) break;
-
+      if(!lines.h.length&&!lines.v.length)break;
       chain++;
-
       const groups=groupsFromLines(lines);
-
-      totalGained+=awardProgress(groups);
-
       const removals=new Set();
-
       const partyEntries=groups.flatMap(g=>{
-
         g.cells.forEach(i=>removals.add(i));
-
         return collectPartyForLines(g);
-
       });
+      const gained=awardProgress(removals.size);
+      totalGained+=gained;
 
+      // 每个连线组先计算一个合成结果；不同组的落点不会相互覆盖。
       const created=groups.map(g=>({
-
+        group:g,
         tile:mergedTile(g),
-
-        place:playerMove && chain===1 && g.cells.has(targetIndex)
-
-          ? targetIndex
-
-          : chooseAutoPosition(g)
-
+        place:playerMove&&chain===1&&g.cells.has(targetIndex)?targetIndex:chooseAutoPosition(g)
       }));
 
-      render();
-
-      $('log').textContent='正在结算消除……';
-
-      await wait(150);
-
-      for(const entry of partyEntries){
-
-        party[entry.tile.chara].push(copyTile(entry.tile));
-
-      }
-
-      const changed=new Set();
-
-      for(let r=0;r<SIZE;r++){
-
-        const survivors=[];
-
-        for(let c=0;c<SIZE;c++){
-
-          const i=idx(r,c);
-
-          if(!removals.has(i)) survivors.push(board[i]);
-
-          else changed.add(i);
-
-        }
-
-        while(survivors.length<SIZE) survivors.push(makeRefillTile());
-
-        for(let c=0;c<SIZE;c++) board[idx(r,c)]=survivors[c];
-
-      }
-
-      created.forEach(({tile,place})=>{
-
-        const p=Math.max(0,Math.min(SIZE*SIZE-1,place));
-
-        board[p]=tile;
-
-      });
-
-      render();
-
-      $('log').textContent=
-
-        `消除 ${removals.size} 个头像，合成 ${created.length} 个新头像；本次累计获得 ${totalGained} 点消除点数。`;
-
+      // 第一阶段：被消除头像闪亮、放大；短暂停留让玩家看清哪些块被消除。
+      matchAnim=new Set(removals);swapAnim.clear();refillAnim.clear();popAnim.clear();refillDelay.clear();render();
+      $('log').textContent=`消除 ${removals.size} 个头像，获得 ${gained} 点消除点数；正在汇聚合成……`;
       await wait(100);
+      // 第二阶段：被消除头像的视觉副本向各自的新头像落点汇聚并缩小消失。
+      await animateConvergence(groups,created);
+      matchAnim.clear();render();
 
-      playerMove=false;
+      // 上阵角色的飞行动画并行播放，避免多条连线时逐个等待太久。
+      await Promise.all(partyEntries.map(entry=>flyToParty(entry)));
 
-    }
-
-    render();
-
-    return chain>0;
-
-  }
-
-  function chooseAutoPosition(g){
-
-    if(g.h.length && g.v.length){
-
-      const intersections=[];
-
-      g.h.forEach(h=>g.v.forEach(v=>{
-
-        h.cells.forEach(i=>{
-
-          if(v.cells.includes(i)) intersections.push(i);
-
+      // 以每行向左压缩的规则结算：保留未消除头像的相对顺序，合成块插入目标列，空位从右侧补充。
+      const nextBoard=new Array(SIZE*SIZE);
+      const newRefillAnim=new Set();
+      const newPopAnim=new Set();
+      const newRefillDelay=new Map();
+      for(let r=0;r<SIZE;r++){
+        const survivors=[];
+        for(let c=0;c<SIZE;c++){
+          const oldIndex=idx(r,c);
+          if(!removals.has(oldIndex))survivors.push({tile:board[oldIndex],from:c,kind:'survivor'});
+        }
+        const rowCreated=created
+          .filter(item=>pos(item.place).r===r)
+          .sort((a,b)=>pos(a.place).c-pos(b.place).c);
+        const items=survivors.slice();
+        rowCreated.forEach(item=>{
+          const wantedCol=pos(item.place).c;
+          const insertAt=Math.max(0,Math.min(wantedCol,items.length));
+          items.splice(insertAt,0,{tile:copyTile(item.tile),kind:'created',group:item.group});
         });
-
-      }));
-
-      if(intersections.length){
-
-        return intersections.sort((a,b)=>pos(a).c-pos(b).c||pos(a).r-pos(b).r)[0];
-
+        while(items.length<SIZE)items.push({tile:makeRefillTile(),kind:'refill',from:-1});
+        // 理论上不会超过 6 格；此防护避免特殊交叉消除产生越界覆盖。
+        if(items.length>SIZE)items.length=SIZE;
+        items.forEach((item,c)=>{
+          const newIndex=idx(r,c);
+          nextBoard[newIndex]=item.tile;
+          if(item.kind==='created')newPopAnim.add(newIndex);
+          if(item.kind==='refill'||(item.kind==='survivor'&&item.from!==c)){
+            newRefillAnim.add(newIndex);
+            // 每行从左到右依次进入，行与行之间也有短暂错开。
+            newRefillDelay.set(newIndex,c*32+r*12);
+          }
+        });
       }
-
+      board=nextBoard;
+      refillAnim=newRefillAnim;
+      popAnim=newPopAnim;
+      refillDelay=newRefillDelay;
+      selected=null;
+      render();
+      $('log').textContent=`消除 ${removals.size} 个头像，生成 ${created.length} 个新头像；棋盘正在向左压缩并依次补充。`;
+      await wait(560);
+      refillAnim.clear();popAnim.clear();refillDelay.clear();render();
+      $('log').textContent=`本次消除 ${removals.size} 个头像，生成 ${created.length} 个新头像，获得 ${totalGained} 点消除点数；上阵 ${groups.reduce((sum,g)=>sum+g.lines.length,0)} 名角色。`;
+      playerMove=false;
     }
-
+    matchAnim.clear();refillAnim.clear();popAnim.clear();refillDelay.clear();swapAnim.clear();render();
+    return chain>0;
+  }
+  function chooseAutoPosition(g){
+    if(g.h.length&&g.v.length){
+      const intersections=[];
+      g.h.forEach(h=>g.v.forEach(v=>h.cells.forEach(i=>{if(v.cells.includes(i))intersections.push(i)})));
+      if(intersections.length)return intersections.sort((a,b)=>pos(a).c-pos(b).c||pos(a).r-pos(b).r)[0];
+    }
     if(g.h.length){
-
-      return g.h.flatMap(l=>l.cells)
-
-        .sort((a,b)=>pos(a).c-pos(b).c||pos(a).r-pos(b).r)[0];
-
+      const cells=g.h.flatMap(l=>l.cells);return cells.sort((a,b)=>pos(a).c-pos(b).c||pos(a).r-pos(b).r)[0];
     }
-
-    return g.v.flatMap(l=>l.cells)
-
-      .sort((a,b)=>pos(a).r-pos(b).r||pos(a).c-pos(b).c)[0];
-
+    const cells=g.v.flatMap(l=>l.cells);return cells.sort((a,b)=>pos(a).r-pos(b).r||pos(a).c-pos(b).c)[0];
   }
-
   async function swapAction(a,b){
-
-    if(busy || !Number.isInteger(a) || !Number.isInteger(b) || a===b) return;
-
-    busy=true;
-
-    selected=null;
-
-    turnCount++;
-
+    if(busy||!Number.isInteger(a)||!Number.isInteger(b)||a===b)return;
+    busy=true;selected=null;turnCount++;
     [board[a],board[b]]=[board[b],board[a]];
-
-    render();
-
-    await wait(100);
-
+    swapAnim=new Set([a,b]);matchAnim.clear();refillAnim.clear();render();
+    await wait(230);swapAnim.clear();render();
     const lines=findLines();
-
-    if(lines.h.length || lines.v.length){
-
+    if(lines.h.length||lines.v.length){
       await resolveMatches(true,b);
-
-    }else{
-
-      $('log').textContent='本次交换没有触发消除。';
-
-    }
-
-    tickCooldowns();
-
-    busy=false;
-
-    render();
-
+      $('log').textContent+=' 可以继续操作。';
+    }else $('log').textContent='已交换头像。当前没有触发消除。';
+    tickCooldowns();busy=false;render();
   }
-
   function start(){
-
-    turnCount=0;
-
-    energy=0;
-
-    cooldowns={A:0,B:0,C:0};
-
-    tier2Refills=0;
-
-    frontBoostRefills=0;
-
-    party=[[],[],[],[]];
-
-    selected=null;
-
-    busy=false;
-
-    let tries=0;
-
-    do{
-
-      initialBoard();
-
-      tries++;
-
-    }while((findLines().h.length||findLines().v.length)&&tries<100);
-
-    $('setup').style.display='none';
-
-    $('game').style.display='block';
-
-    $('log').textContent='游戏开始！点击两个头像交换。每次合成都会积累全局消除点数。';
-
-    render();
-
+    turnCount=0;energy=0;cooldowns={A:0,B:0,C:0};tier2Refills=0;frontBoostRefills=0;
+    party=[[],[],[],[]];selected=null;busy=false;swapAnim.clear();matchAnim.clear();refillAnim.clear();popAnim.clear();refillDelay.clear();
+    let tries=0;do{initialBoard();tries++}while((findLines().h.length||findLines().v.length)&&tries<100);
+    $('setup').style.display='none';$('game').style.display='block';$('log').textContent='游戏开始！拖动头像交换，或依次点击两个头像。每次消除积累点数。';render();
   }
-
+  // iOS Safari：触摸棋盘或拖动头像时禁止页面跟随手指滚动。
+  document.addEventListener('touchmove',e=>{
+    if($('game').style.display!=='none' && (touchDrag || e.target.closest?.('.board'))){e.preventDefault();}
+  },{passive:false});
+  document.addEventListener('gesturestart',e=>{if(e.target.closest?.('.board'))e.preventDefault();},{passive:false});
   $('skillA').addEventListener('click',()=>castSkill('A'));
-
   $('skillB').addEventListener('click',()=>castSkill('B'));
-
   $('skillC').addEventListener('click',()=>castSkill('C'));
-
   $('startBtn').addEventListener('click',start);
-
-  $('restartBtn').addEventListener('click',()=>{
-
-    $('game').style.display='none';
-
-    $('setup').style.display='block';
-
-  });
-
+  $('restartBtn').addEventListener('click',()=>{$('game').style.display='none';$('setup').style.display='block';$('setupError').textContent='';});
 })();
-
 </script>
-
 </body>
-
 </html>
