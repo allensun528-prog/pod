@@ -183,7 +183,11 @@ h1{font-size:clamp(22px,3vw,32px);margin:0 0 8px}.sub{color:var(--muted);margin:
   function mergedTile(group){
     const tiles=[...group.cells].map(i=>board[i]).filter(Boolean);
     if(!tiles.length)return makeTile();
-    const sum=Math.min(9,Math.max(...tiles.map(t=>t.level))+1);
+    // 新块等级 = 本次合成中所有被消除格子的等级之和 + 连线长度奖励。
+    // 每条线以 3 连为基准，每多 1 格额外 +1；交叉/工字形分别累计各条线的奖励。
+    const levelSum=tiles.reduce((sum,t)=>sum+t.level,0);
+    const lineBonus=group.lines.reduce((sum,line)=>sum+Math.max(0,line.cells.length-3),0);
+    const sum=Math.min(9,levelSum+lineBonus);
     const tiers=tiles.map(t=>t.tier),max=Math.max(...tiers),same=tiers.every(x=>x===tiers[0]);
     const cross=group.h.length>0&&group.v.length>0;
     let tier;
