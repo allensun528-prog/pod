@@ -276,14 +276,13 @@ h1{font-size:clamp(22px,3vw,32px);margin:0 0 8px}.sub{color:var(--muted);margin:
   }
   function mergedTile(group){
     const tiles=[...group.cells].map(i=>board[i]).filter(Boolean);
-    if(!tiles.length)return makeTile();
+    if(!tiles.length)return null;
     const tiers=tiles.map(t=>t.tier),max=Math.max(...tiers),same=tiers.every(x=>x===tiers[0]);
+    // 只要本次消除包含橙色（5阶），就只消除、不生成合成块；不会降级生成紫色。
+    if(max>=5)return null;
+    // 所有棋子阶级完全一致：升两阶；只要阶级不一致：以其中最高阶为基准升一阶。
+    const tier=Math.min(5,same?tiers[0]+2:max+1);
     const cross=group.h.length>0&&group.v.length>0;
-    let tier;
-    if(same)tier=Math.min(5,tiers[0]+(cross?2:1));
-    else tier=Math.min(5,max+(cross?1:0));
-    // 如果本次消除的最高阶已是橙色（5阶），合成结果不再生成橙色，最高限制为紫色4阶。
-    if(max>=5)tier=Math.min(4,tier);
     // 新生成棋子继承本次消除中所有已有 Buff 的类型并集，再叠加形状奖励。
     // 同一种 Buff 只保留一个，避免合成后出现重复图标。
     const buffs=tiles.flatMap(t=>t.buffs||[]);
@@ -360,11 +359,10 @@ h1{font-size:clamp(22px,3vw,32px);margin:0 0 8px}.sub{color:var(--muted);margin:
       totalGained+=gained;
 
       // 每个连线组先计算一个合成结果；不同组的落点不会相互覆盖。
-      const created=groups.map(g=>({
-        group:g,
-        tile:mergedTile(g),
-        place:playerMove&&chain===1&&g.cells.has(targetIndex)?targetIndex:chooseAutoPosition(g)
-      }));
+      // 橙色棋子参与的消除不生成任何新块；其他消除才创建合成结果。
+      const created=groups.map(g=>({group:g,tile:mergedTile(g)}))
+        .filter(item=>item.tile!==null)
+        .map(item=>({...item,place:playerMove&&chain===1&&item.group.cells.has(targetIndex)?targetIndex:chooseAutoPosition(item.group)}));
 
       // 第一阶段：被消除头像闪亮、放大；短暂停留让玩家看清哪些块被消除。
       matchAnim=new Set(removals);swapAnim.clear();refillAnim.clear();popAnim.clear();refillDelay.clear();render();
@@ -420,10 +418,10 @@ h1{font-size:clamp(22px,3vw,32px);margin:0 0 8px}.sub{color:var(--muted);margin:
       refillDelay=newRefillDelay;
       selected=null;
       render();
-      $('log').textContent=`消除 ${removals.size} 个头像，生成 ${created.length} 个新头像；存活棋子向下坠落，顶部预备棋子依次补入。`;
+      $('log').textContent=`消除 ${removals.size} 个头像，生成 ${created.length} 个合成头像；橙色参与的消除不生成新块，顶部预备棋子依次补入。`;
       await wait(560);
       refillAnim.clear();popAnim.clear();refillDelay.clear();render();
-      $('log').textContent=`本次消除 ${removals.size} 个头像，生成 ${created.length} 个新头像，获得 ${totalGained} 点消除点数；上阵 ${groups.reduce((sum,g)=>sum+g.lines.length,0)} 名角色。`;
+      $('log').textContent=`本次消除 ${removals.size} 个头像，生成 ${created.length} 个合成头像，获得 ${totalGained} 点消除点数；上阵 ${groups.reduce((sum,g)=>sum+g.lines.length,0)} 名角色。`;
       playerMove=false;
     }
     matchAnim.clear();refillAnim.clear();popAnim.clear();refillDelay.clear();swapAnim.clear();render();
