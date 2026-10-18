@@ -17,17 +17,18 @@ h1{font-size:clamp(22px,3vw,32px);margin:0 0 8px}.sub{color:var(--muted);margin:
 .tile.swap-anim{animation:swapPulse .22s cubic-bezier(.2,.8,.2,1)}
 .tile.match-anim{animation:matchBurst .34s ease-out both;z-index:2}
 .tile.refill-anim{animation:refillSlide .30s cubic-bezier(.2,.75,.25,1) both;animation-delay:var(--stagger,0ms)}
+.preview-panel{margin-bottom:6px;padding:7px 8px;background:#121a29;border:1px solid #34415a;border-radius:10px}.preview-head{display:flex;justify-content:space-between;align-items:center;gap:6px;color:#c4d0e5;font-size:11px;margin-bottom:6px}.preview-head strong{color:#ffe08a;font-size:11px}.preview-row{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:4px}.preview-tile{position:relative;aspect-ratio:1;min-width:0;display:flex;align-items:center;justify-content:center;border:1px solid #dfe7f5;border-radius:5px;overflow:hidden;pointer-events:none}.preview-tile img{width:82%;height:82%;object-fit:contain;mix-blend-mode:multiply}.preview-tile .tier{position:absolute;bottom:0;left:0;padding:0 2px;border-radius:2px;background:#101827e8;color:#fff;font-size:8px;font-weight:800}
 .tile.pop-anim{animation:tilePop .36s cubic-bezier(.2,.8,.25,1) both;z-index:5}
 .flyer.converge{z-index:10000;will-change:transform,opacity;transform-origin:center center}
 .flyer{position:fixed;z-index:9999;pointer-events:none;border:2px solid #fff;border-radius:9px;overflow:hidden;box-shadow:0 8px 26px #0009}.flyer img{width:100%;height:100%;object-fit:cover}
 .tile.dragging{opacity:.38;transform:scale(1.06);filter:brightness(1.12)}
 @keyframes swapPulse{0%{transform:scale(.88) rotate(-3deg);filter:brightness(1.35)}65%{transform:scale(1.08) rotate(2deg)}100%{transform:scale(1);filter:brightness(1)}}
 @keyframes matchBurst{0%{transform:scale(1);opacity:1;filter:brightness(1)}25%{transform:scale(1.12);opacity:1;filter:brightness(1.9)}100%{transform:scale(.72);opacity:.12;filter:brightness(2)}}
-@keyframes refillSlide{0%{transform:translateX(22px);opacity:.2;filter:brightness(1.3)}70%{transform:translateX(-3px);opacity:1}100%{transform:translateX(0);opacity:1;filter:brightness(1)}}
+@keyframes refillSlide{0%{transform:translateY(-22px);opacity:.2;filter:brightness(1.3)}70%{transform:translateY(3px);opacity:1}100%{transform:translateY(0);opacity:1;filter:brightness(1)}}
 @keyframes tilePop{0%{transform:scale(.55);opacity:.25;filter:brightness(1.8)}55%{transform:scale(1.17);opacity:1;filter:brightness(1.25)}78%{transform:scale(.94)}100%{transform:scale(1);opacity:1;filter:brightness(1)}}.tier-1{background:#fff}.tier-2{background:#39b66b}.tier-3{background:#3288e8}.tier-4{background:#a65ce5}.tier-5{background:#f39b31}
 .side h2{font-size:18px;margin:0 0 10px}.party{display:grid;gap:12px}.party-group{border:1px solid var(--line);border-radius:11px;padding:9px;background:#121a29}.party-head{display:flex;align-items:center;justify-content:space-between;font-weight:800;margin-bottom:7px}.party-head small{font-weight:500;color:var(--muted)}.party-list{display:flex;gap:5px;flex-wrap:wrap;min-height:48px}.party-unit{position:relative;width:38px;height:38px;border:2px solid #dfe7f5;border-radius:7px;overflow:visible;background:#fff}.party-unit img{width:100%;height:100%;object-fit:contain;border-radius:5px;mix-blend-mode:multiply}.party-unit .unit-meta{position:absolute;top:-9px;right:-7px;background:#111827;color:white;border:1px solid #fff;border-radius:6px;padding:1px 3px;font-size:10px;white-space:nowrap}.empty{font-size:12px;color:#71809b;align-self:center}.log{margin-top:14px;color:#b8c5dc;font-size:13px;min-height:40px;line-height:1.5}.legend{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px;color:var(--muted);font-size:12px}.legend span{display:flex;align-items:center;gap:4px}.swatch{width:12px;height:12px;border-radius:3px;border:1px solid #ffffff80;display:inline-block}.hint{font-size:12px;line-height:1.6;color:var(--muted);margin-top:12px}.disabled{opacity:.5;pointer-events:none}.skill-panel{margin-top:10px;padding:10px;background:rgba(27,35,53,.96);border:1px solid var(--line);border-radius:12px}.energy-head{display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:12px;color:var(--muted);margin-bottom:6px}.energy-head strong{color:#fff;font-size:15px}.energy-track{height:10px;border-radius:999px;background:#0c111d;border:1px solid #35415a;overflow:hidden}.energy-fill{height:100%;width:0;background:linear-gradient(90deg,#78d8bd,#b7f5d5);transition:width .2s}.skill-buttons{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;margin-top:9px}.skill-btn{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;min-width:0;padding:8px 4px;background:#34415a;color:#eef3ff;border:1px solid #53627b;border-radius:9px}.skill-btn .skill-mark{font-size:19px;font-weight:950;line-height:1.1;color:#ffe08a}.skill-btn .skill-name{font-size:11px;font-weight:800}.skill-btn .skill-state{font-size:10px;color:#c4d0e5;font-weight:500}.skill-btn:disabled{opacity:.42;cursor:not-allowed}.skill-desc{font-size:11px;line-height:1.45;color:var(--muted);margin-top:7px}.buff-legend{display:flex;gap:6px;flex-wrap:wrap;margin-top:7px;font-size:10px;color:var(--muted)}.buff-legend span{display:inline-flex;align-items:center;gap:3px}
 @media(max-width:760px){body{padding: max(6px,env(safe-area-inset-top)) max(6px,env(safe-area-inset-right)) max(6px,env(safe-area-inset-bottom)) max(6px,env(safe-area-inset-left))}.wrap{max-width:none}.layout{grid-template-columns:minmax(0,.78fr) minmax(0,1.22fr);gap:7px;align-items:start}.board-wrap{max-width:100%;width:100%}.board{gap:3px;padding:4px}.tile{border-radius:5px;border-width:1px}.tile .tier{font-size:8px}.side .party{grid-template-columns:1fr}.party-unit{width:clamp(22px,5.8vw,30px);height:clamp(22px,5.8vw,30px)}.panel{padding:7px;border-radius:10px}.party-group{padding:5px}.party-head{font-size:12px}.hint{font-size:10px;line-height:1.35;margin-top:7px}.topbar{gap:6px;margin-bottom:7px}.topbar h1{font-size:clamp(16px,3.3vw,22px)}.topbar .sub{font-size:10px;line-height:1.3}.stats{gap:4px}.stat{font-size:10px;padding:4px 6px}.stat strong{font-size:14px;margin-left:3px}.topbar button{font-size:11px;padding:6px 8px}.legend{gap:4px;margin-top:6px;font-size:9px}.skill-panel{padding:7px;margin-top:6px}.skill-btn{padding:6px 2px;gap:2px}.skill-btn .skill-mark{font-size:16px}.skill-btn .skill-name{font-size:9px}.skill-btn .skill-state{font-size:9px}.skill-desc{font-size:9px}.buff-icon{min-width:11px;height:11px;font-size:8px;padding:0 1px}.swatch{width:9px;height:9px}.log{font-size:10px;min-height:24px;margin-top:6px;line-height:1.3}}
-@media (orientation:landscape) and (max-height:600px){body{padding: max(4px,env(safe-area-inset-top)) max(5px,env(safe-area-inset-right)) max(4px,env(safe-area-inset-bottom)) max(5px,env(safe-area-inset-left))}.game{min-height:calc(100dvh - 8px)}.topbar{margin-bottom:5px;flex-wrap:nowrap;min-height:34px}.topbar>div:first-child{min-width:0}.topbar h1{font-size:clamp(15px,2.8vh,20px);white-space:nowrap}.topbar .sub{font-size:9px;white-space:nowrap}.stats{flex-wrap:nowrap}.stat{white-space:nowrap;padding:3px 5px;font-size:9px}.stat strong{font-size:13px}.topbar button{white-space:nowrap;padding:5px 7px;font-size:10px}.layout{grid-template-columns:minmax(0,.82fr) minmax(0,1.18fr);gap:6px;align-items:start}.side{padding:6px}.side h2{font-size:13px;margin-bottom:5px}.side .party{grid-template-columns:repeat(2,minmax(0,1fr));gap:5px}.party-group{padding:4px;min-width:0}.party-head{font-size:10px;margin-bottom:4px}.party-head small{font-size:9px}.party-list{gap:3px;min-height:26px}.party-unit{width:clamp(19px,4.7vh,27px);height:clamp(19px,4.7vh,27px)}.empty{font-size:9px}.side .hint{font-size:9px;line-height:1.25}.board-wrap{width:min(100%,calc(100dvh - 66px));max-width:calc(100dvh - 66px);margin:0 auto}.board-wrap>.panel{padding:4px}.board{gap:2px;padding:3px;border-radius:7px}.tile{border-radius:4px}.tile img{width:78%;height:78%;border-radius:3px}.tile .tier{bottom:0;left:0;padding:0 2px;font-size:7px;border-radius:2px}.legend{font-size:8px;gap:4px;margin-top:4px}.log{font-size:9px;min-height:20px;margin-top:4px}.swatch{width:8px;height:8px}}
+@media (orientation:landscape) and (max-height:600px){body{padding: max(4px,env(safe-area-inset-top)) max(5px,env(safe-area-inset-right)) max(4px,env(safe-area-inset-bottom)) max(5px,env(safe-area-inset-left))}.game{min-height:calc(100dvh - 8px)}.topbar{margin-bottom:5px;flex-wrap:nowrap;min-height:34px}.topbar>div:first-child{min-width:0}.topbar h1{font-size:clamp(15px,2.8vh,20px);white-space:nowrap}.topbar .sub{font-size:9px;white-space:nowrap}.stats{flex-wrap:nowrap}.stat{white-space:nowrap;padding:3px 5px;font-size:9px}.stat strong{font-size:13px}.topbar button{white-space:nowrap;padding:5px 7px;font-size:10px}.layout{grid-template-columns:minmax(0,.82fr) minmax(0,1.18fr);gap:6px;align-items:start}.side{padding:6px}.side h2{font-size:13px;margin-bottom:5px}.side .party{grid-template-columns:repeat(2,minmax(0,1fr));gap:5px}.party-group{padding:4px;min-width:0}.party-head{font-size:10px;margin-bottom:4px}.party-head small{font-size:9px}.party-list{gap:3px;min-height:26px}.party-unit{width:clamp(19px,4.7vh,27px);height:clamp(19px,4.7vh,27px)}.empty{font-size:9px}.side .hint{font-size:9px;line-height:1.25}.board-wrap{width:min(100%,calc(100dvh - 66px));max-width:calc(100dvh - 66px);margin:0 auto}.board-wrap>.panel{padding:4px}.preview-panel{padding:4px;margin-bottom:4px}.preview-head{font-size:9px;margin-bottom:3px}.preview-head strong{font-size:9px}.preview-row{gap:2px}.preview-tile .tier{font-size:7px}.board{gap:2px;padding:3px;border-radius:7px}.tile{border-radius:4px}.tile img{width:78%;height:78%;border-radius:3px}.tile .tier{bottom:0;left:0;padding:0 2px;font-size:7px;border-radius:2px}.legend{font-size:8px;gap:4px;margin-top:4px}.log{font-size:9px;min-height:20px;margin-top:4px}.swatch{width:8px;height:8px}}
 @media (orientation:portrait) and (max-width:760px){.layout{grid-template-columns:1fr}.side{order:2}.board-wrap{order:1;max-width:min(100%,520px)}.side .party{grid-template-columns:repeat(2,minmax(0,1fr))}.topbar{align-items:flex-start}.topbar>div:first-child .sub{white-space:normal}}
 
 </style>
@@ -55,6 +56,7 @@ h1{font-size:clamp(22px,3vw,32px);margin:0 0 8px}.sub{color:var(--muted);margin:
         <p class="hint">每条被消除的横线或竖线各上阵 1 名角色：优先选择该线中阶级最高者。棋子携带的防御、生命、攻击 Buff 会合并到上阵角色，同类只保留一个。</p>
       </aside>
       <div class="board-wrap">
+        <div class="preview-panel" aria-label="预备补充预览"><div class="preview-head"><span>预备补充（不可操作）</span><strong>从上往下进入</strong></div><div id="refillPreview" class="preview-row"></div></div>
         <div class="panel" style="padding:8px"><div id="board" class="board" aria-label="6乘6三消棋盘"></div></div>
         <div class="legend">
           <span><i class="swatch tier-1"></i>1阶</span><span><i class="swatch tier-2"></i>2阶</span><span><i class="swatch tier-3"></i>3阶</span><span><i class="swatch tier-4"></i>4阶</span><span><i class="swatch tier-5"></i>5阶</span>
@@ -83,7 +85,8 @@ h1{font-size:clamp(22px,3vw,32px);margin:0 0 8px}.sub{color:var(--muted);margin:
   const tierColors=['#e7edf6','#39b66b','#3288e8','#a65ce5','#f39b31'];
   const $=id=>document.getElementById(id);
   let board=[],party=[[],[],[],[]],busy=false,selected=null,dragFrom=null,swapAnim=new Set(),matchAnim=new Set(),refillAnim=new Set(),popAnim=new Set(),refillDelay=new Map(),touchDrag=null,suppressClick=false;
-  let turnCount=0,energy=0,cooldowns={A:0,B:0,C:0},tier2Refills=0,frontBoostRefills=0;
+  let turnCount=0,energy=0,cooldowns={A:0,B:0,C:0},tier2Refills=0,frontBoostRefills=0,refillQueue=[];
+  const PREVIEW_COUNT=6;
   const wait=ms=>new Promise(resolve=>setTimeout(resolve,ms));
   const rand=n=>Math.floor(Math.random()*n);
   const makeTile=(chara=rand(N),tier=1,buffs=[])=>({chara,tier,buffs:[...buffs]});
@@ -110,17 +113,35 @@ h1{font-size:clamp(22px,3vw,32px);margin:0 0 8px}.sub{color:var(--muted);margin:
     uniqueBuffs(buffs).forEach(key=>{const badge=document.createElement('span');badge.className='buff-icon';badge.textContent=buffLabels[key];badge.title=({def:'防御 Buff',hp:'生命 Buff',atk:'攻击 Buff'})[key];root.appendChild(badge)});
     return root;
   }
-  function makeRefillTile(){
+  function makeRefillPreviewTile(offset=0){
     let chara;
-    if(frontBoostRefills>0){
-      // A/B 的权重各为 2，C/D 各为 1：概率分别为 1/3、1/3、1/6、1/6。
+    if(frontBoostRefills>offset){
+      // 丙生效期间：A/B 权重各为 2，C/D 各为 1。
       const roll=Math.random()*6;
       chara=roll<2?0:roll<4?1:roll<5?2:3;
-      frontBoostRefills--;
     }else chara=rand(N);
-    const tier=tier2Refills>0?2:1;
-    if(tier2Refills>0)tier2Refills--;
+    const tier=tier2Refills>offset?2:1;
     return makeTile(chara,tier);
+  }
+  function ensureRefillQueue(){
+    while(refillQueue.length<PREVIEW_COUNT)refillQueue.push(makeRefillPreviewTile(refillQueue.length));
+  }
+  function takeRefillTile(){
+    ensureRefillQueue();
+    const tile=refillQueue.shift();
+    if(tier2Refills>0)tier2Refills--;
+    if(frontBoostRefills>0)frontBoostRefills--;
+    ensureRefillQueue();
+    return copyTile(tile);
+  }
+  function renderRefillPreview(){
+    ensureRefillQueue();
+    const root=$('refillPreview');root.innerHTML='';
+    refillQueue.forEach(t=>{
+      const cell=document.createElement('div');cell.className=`preview-tile tier-${t.tier}`;cell.style.background=tierColors[t.tier-1];
+      const im=image(iconFiles[t.chara],names[t.chara]);im.onerror=()=>{im.remove();const f=document.createElement('span');f.className='fallback';f.textContent=names[t.chara];cell.appendChild(f)};cell.appendChild(im);
+      const tier=document.createElement('span');tier.className='tier';tier.textContent=`${t.tier}阶`;cell.appendChild(tier);root.appendChild(cell);
+    });
   }
   function updateSkillUI(){
     $('energyValue').textContent=energy;
@@ -131,10 +152,16 @@ h1{font-size:clamp(22px,3vw,32px);margin:0 0 8px}.sub{color:var(--muted);margin:
       $(btn).disabled=busy||energy<100||cooldowns[key]>0||(key==='A'&&!board.some(t=>t.tier<5));
     });
   }
-  function awardProgress(removedCount){
-    // 规则：实际消除多少个独立棋子，就获得多少点；交叉格只计一次。
+  function awardProgress(removedCount,groups){
+    // 基础点数按独立消除棋子数计算；再额外奖励本次消除各条线中最高阶的最高值。
+    // 十字交叉格只计一次，阶级奖励也取各线最高阶中的最大值，避免交叉重复计分。
+    let tierBonus=0;
+    for(const group of groups)for(const line of group.lines){
+      const lineMax=Math.max(...line.cells.map(i=>board[i]?.tier||1));
+      tierBonus=Math.max(tierBonus,lineMax);
+    }
     const before=energy;
-    energy=Math.min(300,energy+removedCount);
+    energy=Math.min(300,energy+removedCount+tierBonus);
     updateSkillUI();
     return energy-before;
   }
@@ -148,9 +175,9 @@ h1{font-size:clamp(22px,3vw,32px);margin:0 0 8px}.sub{color:var(--muted);margin:
       picked.forEach(x=>{x.tile.tier=Math.min(5,x.tile.tier+1)});
       energy-=100;cooldowns.A=6;render();$('log').textContent=`发动甲：随机提升了 ${picked.length} 个棋子的阶级。`;
     }else if(key==='B'){
-      tier2Refills+=10;energy-=100;cooldowns.B=6;render();$('log').textContent='发动乙：接下来补充的 10 个棋子均为 2 阶。';
+      tier2Refills+=10;energy-=100;cooldowns.B=6;refillQueue=[];render();$('log').textContent='发动乙：接下来补充的 10 个棋子均为 2 阶。';
     }else if(key==='C'){
-      frontBoostRefills+=15;energy-=100;cooldowns.C=6;render();$('log').textContent='发动丙：接下来补充的 15 个棋子，A/B 权重翻倍。';
+      frontBoostRefills+=15;energy-=100;cooldowns.C=6;refillQueue=[];render();$('log').textContent='发动丙：接下来补充的 15 个棋子，A/B 权重翻倍。';
     }
     updateSkillUI();
   }
@@ -209,7 +236,7 @@ h1{font-size:clamp(22px,3vw,32px);margin:0 0 8px}.sub{color:var(--muted);margin:
     });
     $('turnCount').textContent=turnCount;
     $('partyCount').textContent=party.reduce((s,a)=>s+a.length,0);
-    renderParty();updateSkillUI();
+    renderParty();updateSkillUI();renderRefillPreview();
     root.classList.remove('disabled');
   }
   function renderParty(){
@@ -255,6 +282,8 @@ h1{font-size:clamp(22px,3vw,32px);margin:0 0 8px}.sub{color:var(--muted);margin:
     let tier;
     if(same)tier=Math.min(5,tiers[0]+(cross?2:1));
     else tier=Math.min(5,max+(cross?1:0));
+    // 如果本次消除的最高阶已是橙色（5阶），合成结果不再生成橙色，最高限制为紫色4阶。
+    if(max>=5)tier=Math.min(4,tier);
     // 新生成棋子继承本次消除中所有已有 Buff 的类型并集，再叠加形状奖励。
     // 同一种 Buff 只保留一个，避免合成后出现重复图标。
     const buffs=tiles.flatMap(t=>t.buffs||[]);
@@ -327,7 +356,7 @@ h1{font-size:clamp(22px,3vw,32px);margin:0 0 8px}.sub{color:var(--muted);margin:
         g.cells.forEach(i=>removals.add(i));
         return collectPartyForLines(g);
       });
-      const gained=awardProgress(removals.size);
+      const gained=awardProgress(removals.size,groups);
       totalGained+=gained;
 
       // 每个连线组先计算一个合成结果；不同组的落点不会相互覆盖。
@@ -348,37 +377,40 @@ h1{font-size:clamp(22px,3vw,32px);margin:0 0 8px}.sub{color:var(--muted);margin:
       // 上阵角色的飞行动画并行播放，避免多条连线时逐个等待太久。
       await Promise.all(partyEntries.map(entry=>flyToParty(entry)));
 
-      // 以每行向左压缩的规则结算：保留未消除头像的相对顺序，合成块插入目标列，空位从右侧补充。
+      // 以每列向下坠落的规则结算：保留存活棋子的相对顺序，合成块插入目标行，空位由顶部预备队列补充。
       const nextBoard=new Array(SIZE*SIZE);
       const newRefillAnim=new Set();
       const newPopAnim=new Set();
       const newRefillDelay=new Map();
-      for(let r=0;r<SIZE;r++){
+      for(let c=0;c<SIZE;c++){
         const survivors=[];
-        for(let c=0;c<SIZE;c++){
+        for(let r=0;r<SIZE;r++){
           const oldIndex=idx(r,c);
-          if(!removals.has(oldIndex))survivors.push({tile:board[oldIndex],from:c,kind:'survivor'});
+          if(!removals.has(oldIndex))survivors.push({tile:board[oldIndex],from:r,kind:'survivor'});
         }
-        const rowCreated=created
-          .filter(item=>pos(item.place).r===r)
-          .sort((a,b)=>pos(a.place).c-pos(b.place).c);
+        const colCreated=created
+          .filter(item=>pos(item.place).c===c)
+          .sort((a,b)=>pos(a.place).r-pos(b.place).r);
         const items=survivors.slice();
-        rowCreated.forEach(item=>{
-          const wantedCol=pos(item.place).c;
-          const insertAt=Math.max(0,Math.min(wantedCol,items.length));
+        colCreated.forEach(item=>{
+          const wantedRow=pos(item.place).r;
+          const insertAt=Math.max(0,Math.min(wantedRow,items.length));
           items.splice(insertAt,0,{tile:copyTile(item.tile),kind:'created',group:item.group});
         });
-        while(items.length<SIZE)items.push({tile:makeRefillTile(),kind:'refill',from:-1});
-        // 理论上不会超过 6 格；此防护避免特殊交叉消除产生越界覆盖。
+        if(items.length<SIZE){
+          const missing=SIZE-items.length;
+          const refills=Array.from({length:missing},()=>({tile:takeRefillTile(),kind:'refill',from:-1}));
+          items.unshift(...refills);
+        }
         if(items.length>SIZE)items.length=SIZE;
-        items.forEach((item,c)=>{
+        items.forEach((item,r)=>{
           const newIndex=idx(r,c);
           nextBoard[newIndex]=item.tile;
           if(item.kind==='created')newPopAnim.add(newIndex);
-          if(item.kind==='refill'||(item.kind==='survivor'&&item.from!==c)){
+          if(item.kind==='refill'||(item.kind==='survivor'&&item.from!==r)){
             newRefillAnim.add(newIndex);
-            // 每行从左到右依次进入，行与行之间也有短暂错开。
-            newRefillDelay.set(newIndex,c*32+r*12);
+            // 顶部先补、逐行向下进入；列之间略微错开。
+            newRefillDelay.set(newIndex,r*32+c*12);
           }
         });
       }
@@ -388,7 +420,7 @@ h1{font-size:clamp(22px,3vw,32px);margin:0 0 8px}.sub{color:var(--muted);margin:
       refillDelay=newRefillDelay;
       selected=null;
       render();
-      $('log').textContent=`消除 ${removals.size} 个头像，生成 ${created.length} 个新头像；棋盘正在向左压缩并依次补充。`;
+      $('log').textContent=`消除 ${removals.size} 个头像，生成 ${created.length} 个新头像；存活棋子向下坠落，顶部预备棋子依次补入。`;
       await wait(560);
       refillAnim.clear();popAnim.clear();refillDelay.clear();render();
       $('log').textContent=`本次消除 ${removals.size} 个头像，生成 ${created.length} 个新头像，获得 ${totalGained} 点消除点数；上阵 ${groups.reduce((sum,g)=>sum+g.lines.length,0)} 名角色。`;
@@ -422,7 +454,7 @@ h1{font-size:clamp(22px,3vw,32px);margin:0 0 8px}.sub{color:var(--muted);margin:
     tickCooldowns();busy=false;render();
   }
   function start(){
-    turnCount=0;energy=0;cooldowns={A:0,B:0,C:0};tier2Refills=0;frontBoostRefills=0;
+    turnCount=0;energy=0;cooldowns={A:0,B:0,C:0};tier2Refills=0;frontBoostRefills=0;refillQueue=[];
     party=[[],[],[],[]];selected=null;busy=false;swapAnim.clear();matchAnim.clear();refillAnim.clear();popAnim.clear();refillDelay.clear();
     let tries=0;do{initialBoard();tries++}while((findLines().h.length||findLines().v.length)&&tries<100);
     $('setup').style.display='none';$('game').style.display='block';$('log').textContent='游戏开始！拖动头像交换，或依次点击两个头像。每次消除积累点数。';render();
