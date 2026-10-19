@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<title>角色三消合成原型 v0.4.3</title>
+<title>角色三消合成原型 v0.4.4</title>
 <style>
 :root{--bg:#101522;--panel:#1b2335;--line:#303c54;--text:#eef3ff;--muted:#9caac4;--accent:#78d8bd}
 *{box-sizing:border-box}html{overscroll-behavior:none}body{margin:0;background:radial-gradient(circle at top,#202c43,#101522 55%);color:var(--text);font-family:system-ui,-apple-system,"Segoe UI",sans-serif;padding:22px;min-height:100vh;min-height:100dvh;padding: max(10px,env(safe-area-inset-top)) max(10px,env(safe-area-inset-right)) max(10px,env(safe-area-inset-bottom)) max(10px,env(safe-area-inset-left));overscroll-behavior:none}
@@ -50,7 +50,7 @@ h1{font-size:clamp(22px,3vw,32px);margin:0 0 8px}.sub{color:var(--muted);margin:
 
   <section class="game" id="game">
     <div class="topbar">
-      <div><h1>角色三消合成 <span id="versionTag" style="display:inline-block;vertical-align:middle;font-size:11px;font-weight:800;padding:4px 7px;border:1px solid #60708a;border-radius:7px;color:#ffe08a;background:#111827">版本 v0.4.3 · 移动代码回退</span></h1><p class="sub" style="margin:4px 0 0">拖动或依次点击两个头像交换；没有步数上限。</p></div>
+      <div><h1>角色三消合成 <span id="versionTag" style="display:inline-block;vertical-align:middle;font-size:11px;font-weight:800;padding:4px 7px;border:1px solid #60708a;border-radius:7px;color:#ffe08a;background:#111827">版本 v0.4.4 · 修复交换拦截</span></h1><p class="sub" style="margin:4px 0 0">拖动或依次点击两个头像交换；没有步数上限。</p></div>
       <div class="stats"><div class="stat">步数<strong id="turnCount">0</strong></div><div class="stat">上阵人数<strong id="partyCount">0</strong></div></div>
       <button class="secondary" id="restartBtn">重新开始</button>
     </div>
@@ -476,7 +476,7 @@ h1{font-size:clamp(22px,3vw,32px);margin:0 0 8px}.sub{color:var(--muted);margin:
   async function swapAction(a,b){
     if(busy||!Number.isInteger(a)||!Number.isInteger(b)||a===b)return;
     const ta=board[a],tb=board[b];
-    if(ta&&tb&&ta.tier===tb.tier&&(ta.level||0)===(tb.level||0)&&stateSignature(ta)===stateSignature(tb)){ 
+    if(ta&&tb&&ta.chara===tb.chara&&ta.tier===tb.tier&&(ta.level||0)===(tb.level||0)&&stateSignature(ta)===stateSignature(tb)){ 
       selected=null;render();$('log').textContent='你交换了两个阶级与状态完全相同的棋子，不扣步数。';return;
     }
     busy=true;selected=null;turnCount++;
