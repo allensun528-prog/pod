@@ -241,7 +241,7 @@ h1{font-size:clamp(22px,3vw,32px);margin:0 0 8px}.sub{color:var(--muted);margin:
       im.onerror=()=>{im.remove();const f=document.createElement('span');f.className='fallback';f.textContent=names[t.chara];cell.appendChild(f)};
       if(t.buffs?.length)cell.appendChild(buffBadges(t.buffs));
       const tier=document.createElement('span');tier.className='tier';tier.textContent=`${t.tier===5?'橙':t.tier+'阶'}${t.level>0?' · '+t.level+'级':''}`;cell.appendChild(tier);
-      cell.draggable=!('ontouchstart' in window); // Native HTML drag is desktop-only; touch uses Pointer Events.
+      cell.draggable=true;
       cell.addEventListener('dragstart',e=>{if(busy){e.preventDefault();return}dragFrom=i;cell.classList.add('dragging');e.dataTransfer.setData('text/plain',String(i));e.dataTransfer.effectAllowed='move'});
       cell.addEventListener('dragend',()=>{cell.classList.remove('dragging');dragFrom=null});
       cell.addEventListener('dragover',e=>{e.preventDefault()});
@@ -249,11 +249,26 @@ h1{font-size:clamp(22px,3vw,32px);margin:0 0 8px}.sub{color:var(--muted);margin:
       // iOS Safari does not consistently support native HTML drag-and-drop on touch screens.
       cell.addEventListener('pointerdown',e=>{
         if(e.pointerType!=='touch'||busy)return;
-        // Do not cancel pointerdown: iOS Safari may suppress the synthesized click,
-        // which is required for the two-tap swap fallback. Cancel only after a real drag starts.
+        e.preventDefault();
         const rect=cell.getBoundingClientRect();
         touchDrag={from:i,startX:e.clientX,startY:e.clientY,moved:false,ghost:null,offsetX:e.clientX-rect.left,offsetY:e.clientY-rect.top};
+        cell.setPointerCapture?.(e.pointerId);
       });
+      cell.addEventListener('pointermove',e=>{
+        if(!touchDrag||touchDrag.from!==i)return;
+        e.preventDefault();
+        if(!touchDrag.moved&&Math.hypot(e.clientX-touchDrag.startX,e.clientY-touchDrag.startY)<7)return;
+        if(!touchDrag.moved){touchDrag.moved=true;const rect=cell.getBoundingClientRect();const ghost=cell.cloneNode(true);ghost.classList.remove('selected','swap-anim','match-anim','refill-anim');ghost.classList.add('flyer');ghost.style.position='fixed';ghost.style.left=rect.left+'px';ghost.style.top=rect.top+'px';ghost.style.width=rect.width+'px';ghost.style.height=rect.height+'px';ghost.style.opacity='.72';ghost.style.transform='scale(1.08)';document.body.appendChild(ghost);touchDrag.ghost=ghost;cell.style.opacity='.28'}
+        if(touchDrag.ghost){touchDrag.ghost.style.left=(e.clientX-touchDrag.offsetX)+'px';touchDrag.ghost.style.top=(e.clientY-touchDrag.offsetY)+'px'}
+        e.preventDefault();
+      });
+      cell.addEventListener('pointerup',e=>{
+        if(!touchDrag||touchDrag.from!==i)return;
+        const drag=touchDrag;touchDrag=null;
+        if(drag.ghost)drag.ghost.remove();cell.style.opacity='';
+        if(drag.moved){suppressClick=true;const target=document.elementFromPoint(e.clientX,e.clientY)?.closest('.tile');if(target){const to=Number(target.dataset.index);if(Number.isInteger(to)&&to!==drag.from)swapAction(drag.from,to)}setTimeout(()=>{suppressClick=false},80)}
+      });
+      cell.addEventListener('pointercancel',()=>{if(touchDrag&&touchDrag.from===i){touchDrag.ghost?.remove();touchDrag=null;cell.style.opacity=''}});
       // Click/tap two cells remains available as an alternative to dragging.
       cell.addEventListener('click',()=>{if(suppressClick||busy)return;if(selected===null){selected=i;render()}else if(selected===i){selected=null;render()}else{const from=selected;selected=null;swapAction(from,i)}});
       root.appendChild(cell);
@@ -480,26 +495,6 @@ h1{font-size:clamp(22px,3vw,32px);margin:0 0 8px}.sub{color:var(--muted);margin:
     let tries=0;do{initialBoard();tries++}while((findLines().h.length||findLines().v.length)&&tries<100);
     $('setup').style.display='none';$('game').style.display='block';$('log').textContent='游戏开始！拖动或依次点击两个棋子交换。对应角色消除混阶棋子时，该主将单独充能；盘面技能各自冷却 10 回合。';render();
   }
-  // 使用 document 级 Pointer Events：手指离开原棋子后仍持续追踪，避免 Safari 的 pointer capture 让 elementFromPoint 永远命中起点。
-  document.addEventListener('pointermove',e=>{
-    if(!touchDrag||e.pointerType!=='touch')return;
-    if(!touchDrag.moved&&Math.hypot(e.clientX-touchDrag.startX,e.clientY-touchDrag.startY)<7)return;
-    if(!touchDrag.moved){
-      touchDrag.moved=true;
-      const source=$('board').querySelector(`[data-index="${touchDrag.from}"]`);
-      if(source){const rect=source.getBoundingClientRect();const ghost=source.cloneNode(true);ghost.classList.remove('selected','swap-anim','match-anim','refill-anim');ghost.classList.add('flyer');ghost.style.left=rect.left+'px';ghost.style.top=rect.top+'px';ghost.style.width=rect.width+'px';ghost.style.height=rect.height+'px';ghost.style.opacity='.72';ghost.style.transform='scale(1.08)';document.body.appendChild(ghost);touchDrag.ghost=ghost;source.style.opacity='.28'}
-    }
-    if(touchDrag.ghost){touchDrag.ghost.style.left=(e.clientX-touchDrag.offsetX)+'px';touchDrag.ghost.style.top=(e.clientY-touchDrag.offsetY)+'px'}
-    e.preventDefault();
-  },{passive:false});
-  document.addEventListener('pointerup',e=>{
-    if(!touchDrag||e.pointerType!=='touch')return;
-    const drag=touchDrag;touchDrag=null;
-    const source=$('board').querySelector(`[data-index="${drag.from}"]`);
-    if(drag.ghost)drag.ghost.remove();if(source)source.style.opacity='';
-    if(drag.moved){suppressClick=true;const target=document.elementFromPoint(e.clientX,e.clientY)?.closest('.tile');if(target){const to=Number(target.dataset.index);if(Number.isInteger(to)&&to!==drag.from)swapAction(drag.from,to)}setTimeout(()=>{suppressClick=false},450)}
-  });
-  document.addEventListener('pointercancel',()=>{if(touchDrag){const source=$('board').querySelector(`[data-index="${touchDrag.from}"]`);touchDrag.ghost?.remove();if(source)source.style.opacity='';touchDrag=null}});
   $('boardSkills').addEventListener('click',e=>{const btn=e.target.closest('[data-skill]');if(btn)useBoardSkill(btn.dataset.skill)});
   // iOS Safari：触摸棋盘或拖动头像时禁止页面跟随手指滚动。
   document.addEventListener('touchmove',e=>{
