@@ -12,7 +12,7 @@ button,input{font:inherit}button{cursor:pointer;border:0;border-radius:10px;padd
 .wrap{max-width:820px;margin:auto}.panel{background:rgba(27,35,53,.96);border:1px solid var(--line);border-radius:16px;padding:18px;box-shadow:0 16px 40px #0003}
 h1{font-size:clamp(22px,3vw,32px);margin:0 0 8px}.sub{color:var(--muted);margin:0 0 20px}.setup{max-width:520px;margin:8vh auto}.setup label{display:block;margin:16px 0 7px;color:#c8d4e9}.setup input{width:100%;padding:12px;border-radius:10px;border:1px solid #52617a;background:#111827;color:white;font-size:18px}.error{min-height:22px;color:#ff9d9d;font-size:14px;margin-top:6px}
 .game{display:none}.topbar{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:16px}.stats{display:flex;gap:10px;flex-wrap:wrap}.stat{background:#111827;border:1px solid var(--line);border-radius:10px;padding:8px 12px;color:var(--muted)}.stat strong{color:white;font-size:20px;margin-left:5px}
-.layout{display:grid;grid-template-columns:250px minmax(0,420px);gap:16px;align-items:start;justify-content:center}.board-wrap{width:100%;max-width:420px;margin:0 auto}.board{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:5px;padding:8px;background:#0c111d;border:1px solid #34415a;border-radius:12px;touch-action:none;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;overscroll-behavior:contain}
+.layout{display:grid;grid-template-columns:250px minmax(0,420px);gap:16px;align-items:start;justify-content:center}.board-wrap{width:100%;max-width:420px;margin:0 auto}.board{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:5px;padding:8px;background:#0c111d;border:1px solid #34415a;border-radius:12px;touch-action:none;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;overscroll-behavior:contain;-webkit-tap-highlight-color:transparent}
 .tile{touch-action:none;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;position:relative;aspect-ratio:1;border:2px solid #dfe7f5;border-radius:9px;overflow:hidden;background:#fff;display:flex;align-items:center;justify-content:center;min-width:0;cursor:grab;transition:transform .08s,border-color .08s}.tile:active{cursor:grabbing}.tile img{width:82%;height:82%;object-fit:contain;pointer-events:none;border-radius:5px;box-shadow:0 1px 4px #0005;mix-blend-mode:multiply}.tile .fallback{width:82%;height:82%;display:flex;align-items:center;justify-content:center;border-radius:5px;background:#ffffffd9;font-weight:900;color:#243047;font-size:clamp(12px,2vw,23px)}.buffs{position:absolute;top:1px;left:1px;display:flex;gap:2px;max-width:calc(100% - 2px);flex-wrap:wrap;z-index:3;pointer-events:none}.buff-icon{display:inline-flex;align-items:center;justify-content:center;min-width:14px;height:14px;padding:0 2px;border-radius:4px;background:#101827eF;color:#fff;font-size:9px;font-weight:900;line-height:1;box-shadow:0 1px 3px #0008;white-space:nowrap}.party-buffs{position:absolute;left:-3px;bottom:-5px;display:flex;gap:1px;z-index:3}.party-buffs .buff-icon{min-width:12px;height:12px;padding:0 1px;font-size:8px;border:1px solid #fff}.tile .tier{position:absolute;bottom:1px;left:1px;border-radius:4px;padding:1px 3px;background:#101827e8;color:#fff;font-size:9px;font-weight:800}.tile.selected{outline:3px solid #ffe08a;outline-offset:-3px;transform:scale(.95)}
 .tile.swap-anim{animation:swapPulse .22s cubic-bezier(.2,.8,.2,1)}
 .tile.match-anim{animation:matchBurst .34s ease-out both;z-index:2}
@@ -50,7 +50,7 @@ h1{font-size:clamp(22px,3vw,32px);margin:0 0 8px}.sub{color:var(--muted);margin:
 
   <section class="game" id="game">
     <div class="topbar">
-      <div><h1>角色三消合成</h1><p class="sub" style="margin:4px 0 0">拖动或依次点击两个头像交换；没有步数上限。</p></div>
+      <div><h1>角色三消合成 <span id="versionTag" style="display:inline-block;vertical-align:middle;font-size:11px;font-weight:800;padding:4px 7px;border:1px solid #60708a;border-radius:7px;color:#ffe08a;background:#111827">版本 v0.4.1 · Safari Touch</span></h1><p class="sub" style="margin:4px 0 0">拖动或依次点击两个头像交换；没有步数上限。</p></div>
       <div class="stats"><div class="stat">步数<strong id="turnCount">0</strong></div><div class="stat">上阵人数<strong id="partyCount">0</strong></div></div>
       <button class="secondary" id="restartBtn">重新开始</button>
     </div>
@@ -241,36 +241,12 @@ h1{font-size:clamp(22px,3vw,32px);margin:0 0 8px}.sub{color:var(--muted);margin:
       im.onerror=()=>{im.remove();const f=document.createElement('span');f.className='fallback';f.textContent=names[t.chara];cell.appendChild(f)};
       if(t.buffs?.length)cell.appendChild(buffBadges(t.buffs));
       const tier=document.createElement('span');tier.className='tier';tier.textContent=`${t.tier===5?'橙':t.tier+'阶'}${t.level>0?' · '+t.level+'级':''}`;cell.appendChild(tier);
+      // 桌面端保留浏览器原生拖放；iPhone/iPad Safari 使用下面的 board 级 touch 事件。
       cell.draggable=true;
       cell.addEventListener('dragstart',e=>{if(busy){e.preventDefault();return}dragFrom=i;cell.classList.add('dragging');e.dataTransfer.setData('text/plain',String(i));e.dataTransfer.effectAllowed='move'});
       cell.addEventListener('dragend',()=>{cell.classList.remove('dragging');dragFrom=null});
       cell.addEventListener('dragover',e=>{e.preventDefault()});
       cell.addEventListener('drop',e=>{e.preventDefault();const from=dragFrom??Number(e.dataTransfer.getData('text/plain'));dragFrom=null;swapAction(from,i)});
-      // iOS Safari does not consistently support native HTML drag-and-drop on touch screens.
-      cell.addEventListener('pointerdown',e=>{
-        if(e.pointerType!=='touch'||busy)return;
-        e.preventDefault();
-        const rect=cell.getBoundingClientRect();
-        touchDrag={from:i,startX:e.clientX,startY:e.clientY,moved:false,ghost:null,offsetX:e.clientX-rect.left,offsetY:e.clientY-rect.top};
-        cell.setPointerCapture?.(e.pointerId);
-      });
-      cell.addEventListener('pointermove',e=>{
-        if(!touchDrag||touchDrag.from!==i)return;
-        e.preventDefault();
-        if(!touchDrag.moved&&Math.hypot(e.clientX-touchDrag.startX,e.clientY-touchDrag.startY)<7)return;
-        if(!touchDrag.moved){touchDrag.moved=true;const rect=cell.getBoundingClientRect();const ghost=cell.cloneNode(true);ghost.classList.remove('selected','swap-anim','match-anim','refill-anim');ghost.classList.add('flyer');ghost.style.position='fixed';ghost.style.left=rect.left+'px';ghost.style.top=rect.top+'px';ghost.style.width=rect.width+'px';ghost.style.height=rect.height+'px';ghost.style.opacity='.72';ghost.style.transform='scale(1.08)';document.body.appendChild(ghost);touchDrag.ghost=ghost;cell.style.opacity='.28'}
-        if(touchDrag.ghost){touchDrag.ghost.style.left=(e.clientX-touchDrag.offsetX)+'px';touchDrag.ghost.style.top=(e.clientY-touchDrag.offsetY)+'px'}
-        e.preventDefault();
-      });
-      cell.addEventListener('pointerup',e=>{
-        if(!touchDrag||touchDrag.from!==i)return;
-        const drag=touchDrag;touchDrag=null;
-        if(drag.ghost)drag.ghost.remove();cell.style.opacity='';
-        if(drag.moved){suppressClick=true;const target=document.elementFromPoint(e.clientX,e.clientY)?.closest('.tile');if(target){const to=Number(target.dataset.index);if(Number.isInteger(to)&&to!==drag.from)swapAction(drag.from,to)}setTimeout(()=>{suppressClick=false},80)}
-      });
-      cell.addEventListener('pointercancel',()=>{if(touchDrag&&touchDrag.from===i){touchDrag.ghost?.remove();touchDrag=null;cell.style.opacity=''}});
-      // Click/tap two cells remains available as an alternative to dragging.
-      cell.addEventListener('click',()=>{if(suppressClick||busy)return;if(selected===null){selected=i;render()}else if(selected===i){selected=null;render()}else{const from=selected;selected=null;swapAction(from,i)}});
       root.appendChild(cell);
     });
     $('turnCount').textContent=turnCount;
@@ -278,6 +254,51 @@ h1{font-size:clamp(22px,3vw,32px);margin:0 0 8px}.sub{color:var(--muted);margin:
     renderParty();updateSkillUI();renderRefillPreview();
     root.classList.remove('disabled');
   }
+  // iOS Safari 专用：在棋盘容器上统一处理 touchstart/move/end，避免 pointer capture
+  // 把 pointerup 锁在起始格，导致拖到目标格时无法交换。点击交换也由棋盘统一委托。
+  const boardRoot=$('board');
+  function clearTouchDrag(){
+    if(touchDrag?.ghost)touchDrag.ghost.remove();
+    if(touchDrag?.cell)touchDrag.cell.style.opacity='';
+    touchDrag=null;
+  }
+  boardRoot.addEventListener('touchstart',e=>{
+    if(busy||e.touches.length!==1)return;
+    const cell=e.target.closest('.tile');if(!cell||!boardRoot.contains(cell))return;
+    const t=e.touches[0],rect=cell.getBoundingClientRect();
+    touchDrag={from:Number(cell.dataset.index),cell,startX:t.clientX,startY:t.clientY,moved:false,ghost:null,offsetX:t.clientX-rect.left,offsetY:t.clientY-rect.top};
+  },{passive:true});
+  boardRoot.addEventListener('touchmove',e=>{
+    if(!touchDrag||!e.touches.length)return;
+    e.preventDefault();const t=e.touches[0];
+    if(!touchDrag.moved&&Math.hypot(t.clientX-touchDrag.startX,t.clientY-touchDrag.startY)<7)return;
+    if(!touchDrag.moved){
+      touchDrag.moved=true;const rect=touchDrag.cell.getBoundingClientRect();
+      const ghost=touchDrag.cell.cloneNode(true);ghost.classList.remove('selected','swap-anim','match-anim','refill-anim','pop-anim');
+      ghost.classList.add('flyer');ghost.style.left=rect.left+'px';ghost.style.top=rect.top+'px';ghost.style.width=rect.width+'px';ghost.style.height=rect.height+'px';ghost.style.opacity='.78';ghost.style.transform='scale(1.06)';
+      document.body.appendChild(ghost);touchDrag.ghost=ghost;touchDrag.cell.style.opacity='.28';
+    }
+    if(touchDrag.ghost){touchDrag.ghost.style.left=(t.clientX-touchDrag.offsetX)+'px';touchDrag.ghost.style.top=(t.clientY-touchDrag.offsetY)+'px'}
+  },{passive:false});
+  boardRoot.addEventListener('touchend',e=>{
+    if(!touchDrag)return;const drag=touchDrag;const t=e.changedTouches[0];
+    if(drag.moved)e.preventDefault();
+    clearTouchDrag();
+    if(drag.moved){
+      suppressClick=true;const target=document.elementFromPoint(t.clientX,t.clientY)?.closest('.tile');
+      if(target&&boardRoot.contains(target)){const to=Number(target.dataset.index);if(Number.isInteger(to)&&to!==drag.from)swapAction(drag.from,to)}
+      setTimeout(()=>{suppressClick=false},400);
+    }
+  },{passive:false});
+  boardRoot.addEventListener('touchcancel',()=>clearTouchDrag(),{passive:true});
+  boardRoot.addEventListener('click',e=>{
+    const cell=e.target.closest('.tile');if(!cell||!boardRoot.contains(cell)||suppressClick||busy)return;
+    const i=Number(cell.dataset.index);
+    if(selected===null){selected=i;render()}
+    else if(selected===i){selected=null;render()}
+    else{const from=selected;selected=null;swapAction(from,i)}
+  });
+
   function renderParty(){
     const root=$('party');root.innerHTML='';root.className='commander-list';
     for(let chara=0;chara<N;chara++){
@@ -498,7 +519,7 @@ h1{font-size:clamp(22px,3vw,32px);margin:0 0 8px}.sub{color:var(--muted);margin:
   $('boardSkills').addEventListener('click',e=>{const btn=e.target.closest('[data-skill]');if(btn)useBoardSkill(btn.dataset.skill)});
   // iOS Safari：触摸棋盘或拖动头像时禁止页面跟随手指滚动。
   document.addEventListener('touchmove',e=>{
-    if($('game').style.display!=='none' && (touchDrag || e.target.closest?.('.board'))){e.preventDefault();}
+    if($('game').style.display!=='none' && e.target.closest?.('.board')){e.preventDefault();}
   },{passive:false});
   document.addEventListener('gesturestart',e=>{if(e.target.closest?.('.board'))e.preventDefault();},{passive:false});
   $('startBtn').addEventListener('click',start);
