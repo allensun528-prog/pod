@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<title>角色三消合成原型 v0.4.6</title>
+<title>角色三消合成原型 v0.4.8</title>
 <style>
 :root{--bg:#101522;--panel:#1b2335;--line:#303c54;--text:#eef3ff;--muted:#9caac4;--accent:#78d8bd}
 *{box-sizing:border-box}html{overscroll-behavior:none}body{margin:0;background:radial-gradient(circle at top,#202c43,#101522 55%);color:var(--text);font-family:system-ui,-apple-system,"Segoe UI",sans-serif;padding:22px;min-height:100vh;min-height:100dvh;padding: max(10px,env(safe-area-inset-top)) max(10px,env(safe-area-inset-right)) max(10px,env(safe-area-inset-bottom)) max(10px,env(safe-area-inset-left));overscroll-behavior:none}
@@ -60,7 +60,7 @@ h1{font-size:clamp(22px,3vw,32px);margin:0 0 8px}.sub{color:var(--muted);margin:
 
   <section class="game" id="game">
     <div class="topbar">
-      <div><h1>角色三消合成 <span id="versionTag" style="display:inline-block;vertical-align:middle;font-size:11px;font-weight:800;padding:4px 7px;border:1px solid #60708a;border-radius:7px;color:#ffe08a;background:#111827">版本 v0.4.7 · 同角色同阶匹配</span></h1><p class="sub" style="margin:4px 0 0">拖动或依次点击两个头像交换；没有步数上限。</p></div>
+      <div><h1>角色三消合成 <span id="versionTag" style="display:inline-block;vertical-align:middle;font-size:11px;font-weight:800;padding:4px 7px;border:1px solid #60708a;border-radius:7px;color:#ffe08a;background:#111827">版本 v0.4.8 · 初始全一阶</span></h1><p class="sub" style="margin:4px 0 0">拖动或依次点击两个头像交换；没有步数上限。</p></div>
       <div class="stats"><div class="stat">步数<strong id="turnCount">0</strong></div><div class="stat">上阵人数<strong id="partyCount">0</strong></div></div>
       <button class="secondary" id="restartBtn">重新开始</button>
     </div>
@@ -127,13 +127,12 @@ h1{font-size:clamp(22px,3vw,32px);margin:0 0 8px}.sub{color:var(--muted);margin:
   const copyTile=t=>({...t,buffs:[...(t.buffs||[])]});
   function image(src,alt){const im=document.createElement('img');im.src=src;im.alt=alt;im.onerror=()=>im.remove();return im}
   function initialBoard(){
-    // 匹配条件为角色和阶级，因此开局必须混合角色/阶级，不能把全部棋子都设为同一组合。
-    // 拒绝采样确保每次放入的新棋子不会立即组成横/纵三连。
+    // 开局所有棋子固定为一阶；通过随机角色拒绝采样，确保初始盘面不会立即出现三连。
     board=[];
     for(let i=0;i<SIZE*SIZE;i++){
       let t,tries=0;
       do{
-        t=makeTile(rand(N),1+rand(5));tries++;
+        t=makeTile(rand(N),1);tries++;
       }while(tries<100 && createsTriple(i,t));
       board.push(t);
     }
@@ -152,7 +151,7 @@ h1{font-size:clamp(22px,3vw,32px);margin:0 0 8px}.sub{color:var(--muted);margin:
       const roll=Math.random()*6;
       chara=roll<2?0:roll<4?1:roll<5?2:3;
     }else chara=rand(N);
-    const tier=tier2Refills>offset?2:1+rand(5);
+    const tier=tier2Refills>offset?2:1;
     return makeTile(chara,tier);
   }
   function ensureRefillQueue(){
