@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<title>角色三消合成原型 v0.4.8</title>
+<title>角色三消合成原型 v0.5.1</title>
 <style>
 :root{--bg:#101522;--panel:#1b2335;--line:#303c54;--text:#eef3ff;--muted:#9caac4;--accent:#78d8bd}
 *{box-sizing:border-box}html{overscroll-behavior:none}body{margin:0;background:radial-gradient(circle at top,#202c43,#101522 55%);color:var(--text);font-family:system-ui,-apple-system,"Segoe UI",sans-serif;padding:22px;min-height:100vh;min-height:100dvh;padding: max(10px,env(safe-area-inset-top)) max(10px,env(safe-area-inset-right)) max(10px,env(safe-area-inset-bottom)) max(10px,env(safe-area-inset-left));overscroll-behavior:none}
@@ -46,6 +46,11 @@ h1{font-size:clamp(22px,3vw,32px);margin:0 0 8px}.sub{color:var(--muted);margin:
 .skill-floating.s3{color:#c8ffe3;border-color:#78d8bd}
 @keyframes skillFloatUp{0%{opacity:0;transform:translate(-50%,8px) scale(.88)}12%{opacity:1;transform:translate(-50%,0) scale(1)}100%{opacity:0;transform:translate(-50%,-48px) scale(1.02)}}
 
+
+/* 关卡配置 */
+.setup-options{margin:16px 0;padding:12px;border:1px solid #34415a;border-radius:12px;background:#111827}.setup-options h3{margin:0 0 8px;font-size:14px;color:#ffe08a}.setup-options p{margin:0 0 8px;color:#9caac4;font-size:12px;line-height:1.45}.choice-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px}.choice-grid label{display:flex;align-items:center;gap:7px;margin:0;padding:8px;border:1px solid #34415a;border-radius:8px;background:#1b2335;color:#eaf0fa;font-size:13px}.choice-grid input{width:16px;height:16px;accent-color:#78d8bd;margin:0}.setup-options .group-label{margin:10px 0 6px;font-size:12px;color:#9caac4}
+.tile.empty-tile{background:#0c111d!important;border:1px dashed #34415a!important;box-shadow:none!important;cursor:default}.obstacle-stone{background:#030406!important;border-color:#15171c!important;box-shadow:inset 0 0 0 3px #111318,0 1px 3px #0008!important}.obstacle-wood{background:#c9a078!important;border-color:#9f7448!important;box-shadow:inset 0 0 0 3px #b18456,0 1px 3px #0008!important}.obstacle-face{width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-weight:1000;user-select:none;pointer-events:none}.obstacle-wood .obstacle-face{font-size:clamp(13px,2.6vw,24px);color:#69421f;text-shadow:0 1px #f5d5ad}.obstacle-bomb{background:#35151a!important;border-color:#fd5360!important;box-shadow:inset 0 0 0 2px #82232d,0 1px 3px #0008!important}.bomb-face{position:relative;width:78%;height:78%;border-radius:50%;background:radial-gradient(circle at 32% 28%,#ff8890,#e51e34 55%,#9e071c);border:2px solid #ffb2b8;display:flex;align-items:center;justify-content:center;color:white;font-weight:1000;text-shadow:0 1px 3px #45000b;box-shadow:0 2px 5px #0008}.bomb-timer{display:flex;align-items:center;justify-content:center;border:1.5px solid #fff;border-radius:50%;width:25px;height:25px;background:#a90e24;color:#fff;font-size:13px;line-height:1}.bomb-count{position:absolute;right:-6px;bottom:-5px;min-width:18px;height:18px;display:flex;align-items:center;justify-content:center;border:2px solid #fff;background:#252b37;color:#fff;font-size:10px;line-height:1;border-radius:3px;box-shadow:0 1px 3px #0008}.status-overlay{position:absolute;inset:0;z-index:4;display:flex;align-items:center;justify-content:center;pointer-events:none;font-weight:1000;color:#fff;text-shadow:0 1px 4px #000c}.status-chain{background:#10182755;font-size:clamp(24px,5vw,40px);color:#fff9}.status-freeze{clip-path:polygon(22% 0,78% 0,100% 32%,86% 100%,14% 100%,0 32%);background:#63c9ff88;border:2px solid #b5efff;color:#e8fbff;font-size:clamp(21px,4vw,34px);text-shadow:0 1px 5px #075a92}.status-flight{inset:9%;border-radius:50%;background:#9ce7ff70;border:2px solid #dcf9ff88;color:#e8fcff;font-size:clamp(18px,4vw,30px)}.status-paralysis{clip-path:polygon(12% 0,32% 10%,48% 0,58% 13%,82% 0,77% 24%,100% 38%,82% 50%,100% 67%,76% 72%,83% 100%,55% 88%,40% 100%,28% 84%,0 93%,13% 68%,0 50%,17% 33%);background:#737b8ab5;color:#e0e4eb;font-size:clamp(21px,4vw,34px)}.tile.has-paralysis img{filter:grayscale(1) brightness(.72)}.status-turns{position:absolute;right:1px;top:1px;z-index:5;min-width:15px;height:15px;padding:0 3px;border-radius:4px;background:#101827eF;color:white;font-size:10px;line-height:15px;text-align:center;text-shadow:none}.status-description{font-size:11px;line-height:1.45;color:#c4d0e5;margin-top:7px}.legend-obstacles{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px;font-size:10px;color:#c4d0e5}.legend-obstacles span{display:inline-flex;align-items:center;gap:4px}.legend-obstacles i{display:inline-block;width:13px;height:13px;border-radius:3px;border:1px solid #fff7}.legend-stone{background:#050505}.legend-wood{background:#c9a078}.legend-bomb{background:#e51e34;border-radius:50%!important}.tile.obstacle-tile img{display:none}
+
 </style>
 </head>
 <body>
@@ -54,13 +59,31 @@ h1{font-size:clamp(22px,3vw,32px);margin:0 0 8px}.sub{color:var(--muted);margin:
     <h1>角色三消合成</h1>
     <p class="sub">6 × 6 棋盘 · 四位主将 · 同角色同阶消除升阶 · 主将独立充能 · 多连技能</p>
     <div class="error" id="setupError"></div>
+    <div class="setup-options">
+      <h3>本关障碍块（最多勾选 1 种）</h3>
+      <p>每隔 5～7 回合随机生成所选的一种障碍块；默认石块。</p>
+      <div class="choice-grid" id="obstacleChoices">
+        <label><input type="checkbox" name="obstacleType" value="stone" checked> 石块（不可摧毁，可下落）</label>
+        <label><input type="checkbox" name="obstacleType" value="wood"> 木块（邻近消除可清除）</label>
+        <label><input type="checkbox" name="obstacleType" value="bomb"> 炸弹（倒计时爆炸）</label>
+      </div>
+      <h3 style="margin-top:15px">本关状态块（最多勾选 1 种）</h3>
+      <p>状态附加在角色头像上；默认锁链。取消所有勾选可关闭对应类别。</p>
+      <div class="choice-grid" id="statusChoices">
+        <label><input type="checkbox" name="statusType" value="chain" checked> 锁链（触发消除时解锁）</label>
+        <label><input type="checkbox" name="statusType" value="freeze"> 冰冻（固定位置，解冻后再恢复下落）</label>
+        <label><input type="checkbox" name="statusType" value="flight"> 飞行（3 回合后交换位置）</label>
+        <label><input type="checkbox" name="statusType" value="paralysis"> 麻痹（3 回合内不参与匹配）</label>
+      </div>
+      <div class="status-description">每次触发时，从已勾选的障碍/状态种类中随机选一种，再选取 1～2 个当前最低阶、最低级且没有状态的角色格子施加效果。炸弹默认 4 回合后爆炸，邻近消除累计 2 次也会消失。</div>
+    </div>
     <button id="startBtn" style="width:100%;margin-top:8px">进入游戏</button>
     <p class="hint">头像素材请与本 HTML 放在同一文件夹：icon_a.png、icon_b.png、icon_c.png、icon_d.png，以及 chara_a.png、chara_b.png、chara_c.png、chara_d.png。</p>
   </section>
 
   <section class="game" id="game">
     <div class="topbar">
-      <div><h1>角色三消合成 <span id="versionTag" style="display:inline-block;vertical-align:middle;font-size:11px;font-weight:800;padding:4px 7px;border:1px solid #60708a;border-radius:7px;color:#ffe08a;background:#111827">版本 v0.4.8 · 初始全一阶</span></h1><p class="sub" style="margin:4px 0 0">拖动或依次点击两个头像交换；没有步数上限。</p></div>
+      <div><h1>角色三消合成 <span id="versionTag" style="display:inline-block;vertical-align:middle;font-size:11px;font-weight:800;padding:4px 7px;border:1px solid #60708a;border-radius:7px;color:#ffe08a;background:#111827">版本 v0.5.1 · 障碍与状态块</span></h1><p class="sub" style="margin:4px 0 0">拖动或依次点击两个头像交换；没有步数上限。</p></div>
       <div class="stats"><div class="stat">步数<strong id="turnCount">0</strong></div><div class="stat">上阵人数<strong id="partyCount">0</strong></div></div>
       <button class="secondary" id="restartBtn">重新开始</button>
     </div>
@@ -111,20 +134,35 @@ h1{font-size:clamp(22px,3vw,32px);margin:0 0 8px}.sub{color:var(--muted);margin:
     [{icon:'✚',name:'祝福屏障'},{icon:'❖',name:'惩戒'},{icon:'✧',name:'鼓舞'}]
   ];
   const SKILL_VALUES={shieldPerStack:10,enemyDamage:5,attackPercentPerStack:1,maxStacks:10};
+  const ENERGY_CAP=20;
+  const OBSTACLE_TYPES=['stone','wood','bomb'];
+  const STATUS_TYPES=['chain','freeze','flight','paralysis'];
+  const BOARD_EVENT_INTERVAL={min:5,max:7};
+  const BOARD_EVENT_TARGETS={min:1,max:2};
+  const BOMB_INITIAL_TURNS=4, BOMB_NEIGHBOR_CLEAR_LIMIT=2, FLIGHT_TURNS=3, PARALYSIS_TURNS=3;
   const $=id=>document.getElementById(id);
   let board=[],party=[[],[],[],[]],busy=false,selected=null,dragFrom=null,swapAnim=new Set(),matchAnim=new Set(),refillAnim=new Set(),popAnim=new Set(),refillDelay=new Map(),touchDrag=null,suppressClick=false;
-  let turnCount=0,commanderEnergy=[0,0,0,0],activeCommanderEffects=[[],[],[],[]],commanderBattleStats=Array.from({length:N},()=>({shieldStacks:0,attackStacks:0})),enemyUnits=[],tier2Refills=0,frontBoostRefills=0,refillQueue=[];
+  let turnCount=0,commanderEnergy=[0,0,0,0],activeCommanderEffects=[[],[],[],[]],commanderBattleStats=Array.from({length:N},()=>({shieldStacks:0,attackStacks:0})),enemyUnits=[],tier2Refills=0,frontBoostRefills=0,refillQueue=[],nextBoardEventTurn=0;
   const BOARD_SKILL_INITIAL_CD={front:5,raise:8,reinforce:7};
   const BOARD_SKILL_REPEAT_CD=10;
   const BOARD_SKILLS={front:5,raise:8,reinforce:7};
   const PREVIEW_COUNT=6;
   const wait=ms=>new Promise(resolve=>setTimeout(resolve,ms));
   const rand=n=>Math.floor(Math.random()*n);
-  const makeTile=(chara=rand(N),tier=1,buffs=[],level=0)=>({chara,tier,level,buffs:[...buffs].slice(0,1)});
+  const makeTile=(chara=rand(N),tier=1,buffs=[],level=0)=>({kind:'unit',chara,tier,level,buffs:[...buffs].slice(0,1),status:null});
+  const makeObstacle=(type)=>({kind:'obstacle',obstacleType:type,bombTimer:type==='bomb'?BOMB_INITIAL_TURNS:null,bombNeighborClears:0});
+  const isObstacle=t=>!!t&&t.kind==='obstacle';
+  const isUnit=t=>!!t&&!isObstacle(t)&&Number.isInteger(t.chara);
+  const isParalyzed=t=>isUnit(t)&&t.status?.type==='paralysis';
+  const isMatchable=t=>isUnit(t)&&!isParalyzed(t);
+  const canMoveTile=t=>isUnit(t)&&!['chain','freeze'].includes(t.status?.type);
+  const selectedOptions=(name)=>[...document.querySelectorAll(`input[name="${name}"]:checked`)].map(e=>e.value);
+  const intervalRandom=()=>BOARD_EVENT_INTERVAL.min+rand(BOARD_EVENT_INTERVAL.max-BOARD_EVENT_INTERVAL.min+1);
+  const countRandom=()=>BOARD_EVENT_TARGETS.min+rand(BOARD_EVENT_TARGETS.max-BOARD_EVENT_TARGETS.min+1);
   const idx=(r,c)=>r*SIZE+c;
   const pos=i=>({r:Math.floor(i/SIZE),c:i%SIZE});
   const isValid=(r,c)=>r>=0&&r<SIZE&&c>=0&&c<SIZE;
-  const copyTile=t=>({...t,buffs:[...(t.buffs||[])]});
+  const copyTile=t=>t?({...t,buffs:[...(t.buffs||[])],status:t.status?{...t.status}:null}):null;
   function image(src,alt){const im=document.createElement('img');im.src=src;im.alt=alt;im.onerror=()=>im.remove();return im}
   function initialBoard(){
     // 开局所有棋子固定为一阶；通过随机角色拒绝采样，确保初始盘面不会立即出现三连。
@@ -144,32 +182,43 @@ h1{font-size:clamp(22px,3vw,32px);margin:0 0 8px}.sub{color:var(--muted);margin:
     uniqueBuffs(buffs).forEach(key=>{const badge=document.createElement('span');badge.className='buff-icon';badge.textContent=buffLabels[key];badge.title=({s1:'四连：上阵时触发技能Ⅰ',s2:'直线五连/六连：上阵时触发技能Ⅱ',s3:'横纵交叉：上阵时触发技能Ⅲ',def:'防御状态',hp:'生命状态',atk:'攻击状态'})[key];root.appendChild(badge)});
     return root;
   }
-  function makeRefillPreviewTile(offset=0){
+  function makeRefillPreviewTile(){
+    // 预览队列中的棋子已经预留了各自的技能效果，消费时不再二次扣减计数。
+    const boosted=frontBoostRefills>0;
+    const reinforced=tier2Refills>0;
+    if(boosted)frontBoostRefills--;
+    if(reinforced)tier2Refills--;
     let chara;
-    if(frontBoostRefills>offset){
+    if(boosted){
       // 技能生效期间：A/B 权重各为 2，C/D 各为 1。
       const roll=Math.random()*6;
       chara=roll<2?0:roll<4?1:roll<5?2:3;
     }else chara=rand(N);
-    const tier=tier2Refills>offset?2:1;
-    return makeTile(chara,tier);
+    const tile=makeTile(chara,reinforced?2:1);
+    return {tile,boosted,reinforced};
+  }
+  function reserveRefillQueueForRegeneration(){
+    // 改变补块技能时，恢复旧预览队列占用的技能次数，避免清空预览导致技能次数凭空丢失。
+    for(const entry of refillQueue){
+      if(entry.boosted)frontBoostRefills++;
+      if(entry.reinforced)tier2Refills++;
+    }
+    refillQueue=[];
   }
   function ensureRefillQueue(){
-    while(refillQueue.length<PREVIEW_COUNT)refillQueue.push(makeRefillPreviewTile(refillQueue.length));
+    while(refillQueue.length<PREVIEW_COUNT)refillQueue.push(makeRefillPreviewTile());
   }
   function takeRefillTile(){
     ensureRefillQueue();
-    const tile=refillQueue.shift();
-    if(tier2Refills>0)tier2Refills--;
-    if(frontBoostRefills>0)frontBoostRefills--;
+    const entry=refillQueue.shift();
     ensureRefillQueue();
-    return copyTile(tile);
+    return copyTile(entry?.tile);
   }
   function renderRefillPreview(){
     ensureRefillQueue();
     const root=$('refillPreview');root.innerHTML='';
-    refillQueue.forEach(t=>{
-      const cell=document.createElement('div');cell.className=`preview-tile tier-${t.tier}`;cell.style.background=tierColors[t.tier-1];
+    refillQueue.forEach(entry=>{
+      const t=entry.tile;const cell=document.createElement('div');cell.className=`preview-tile tier-${t.tier}`;cell.style.background=tierColors[t.tier-1];
       const im=image(iconFiles[t.chara],names[t.chara]);im.onerror=()=>{im.remove();const f=document.createElement('span');f.className='fallback';f.textContent=names[t.chara];cell.appendChild(f)};cell.appendChild(im);
       const tier=document.createElement('span');tier.className='tier';tier.textContent=`${t.tier===5?'橙':t.tier+'阶'}${t.level>0?' · '+t.level+'级':''}`;cell.appendChild(tier);root.appendChild(cell);
     });
@@ -178,7 +227,7 @@ h1{font-size:clamp(22px,3vw,32px);margin:0 0 8px}.sub{color:var(--muted);margin:
     for(let i=0;i<N;i++){
       const value=$(`commanderEnergy${i}`),fill=$(`commanderEnergyFill${i}`);
       if(value)value.textContent=commanderEnergy[i];
-      if(fill){fill.style.width=commanderEnergy[i]+'%';fill.classList.toggle('ready',commanderEnergy[i]>=100)}
+      if(fill){fill.style.width=(commanderEnergy[i]/ENERGY_CAP*100)+'%';fill.classList.toggle('ready',commanderEnergy[i]>=ENERGY_CAP)}
     }
     for(const key of Object.keys(BOARD_SKILLS)){
       const left=Math.max(0,BOARD_SKILLS[key]-turnCount);
@@ -188,22 +237,17 @@ h1{font-size:clamp(22px,3vw,32px);margin:0 0 8px}.sub{color:var(--muted);margin:
       if(label)label.textContent=left>0?`CD ${left}`:'可用';
     }
   }
-  function awardClearEnergy(groups){
-    // 每个被消除棋子按自身阶级给所属主将充能；N阶= N 点，交叉格只计一次。
+  function awardClearEnergy(clearedUnitIndices){
+    // 只计算实际消失的角色棋子；交叉格只计一次，锁链/冰冻解锁后保留的头像不计。
     const requested=[0,0,0,0];
-    const counted=new Set();
-    for(const group of groups){
-      for(const index of group.cells){
-        if(counted.has(index))continue;
-        counted.add(index);
-        const tile=board[index];
-        if(tile)requested[tile.chara]+=tile.tier;
-      }
+    for(const index of clearedUnitIndices){
+      const tile=board[index];
+      if(isUnit(tile))requested[tile.chara]+=tile.tier;
     }
-    const applied=[0,0,0,0];
+    const applied=[];
     for(let i=0;i<N;i++){
       const before=commanderEnergy[i];
-      commanderEnergy[i]=Math.min(100,before+requested[i]);
+      commanderEnergy[i]=Math.min(ENERGY_CAP,before+requested[i]);
       applied[i]=commanderEnergy[i]-before;
     }
     updateSkillUI();
@@ -217,10 +261,10 @@ h1{font-size:clamp(22px,3vw,32px);margin:0 0 8px}.sub{color:var(--muted);margin:
     if(busy||!Object.prototype.hasOwnProperty.call(BOARD_SKILLS,key)||BOARD_SKILLS[key]>turnCount)return;
     if(key==='front'){
       // 后续 10 个补块中，A/B 权重各为 2，C/D 权重各为 1。
-      frontBoostRefills=10;refillQueue=[];ensureRefillQueue();
+      reserveRefillQueueForRegeneration();frontBoostRefills=10;ensureRefillQueue();
       $('log').textContent='盘面技能：近战块概率提升，接下来 10 个补块提高 A/B 的出现权重。';
     }else if(key==='raise'){
-      const candidates=board.map((t,i)=>({t,i})).filter(x=>x.t.tier<5);
+      const candidates=board.map((t,i)=>({t,i})).filter(x=>isUnit(x.t)&&x.t.tier<5);
       if(!candidates.length){$('log').textContent='盘面技能：没有可升阶的棋子。';return}
       for(let n=0;n<3&&candidates.length;n++){
         // 随机抽取且不重复，不按阶级排序或优先高阶棋子。
@@ -228,7 +272,7 @@ h1{font-size:clamp(22px,3vw,32px);margin:0 0 8px}.sub{color:var(--muted);margin:
       }
       $('log').textContent='盘面技能：随机将最多 3 个不同棋子升高一阶。';
     }else if(key==='reinforce'){
-      tier2Refills=10;refillQueue=[];ensureRefillQueue();
+      reserveRefillQueueForRegeneration();tier2Refills=10;ensureRefillQueue();
       $('log').textContent='盘面技能：接下来 10 个补充棋子固定为绿色二阶。';
     }
     BOARD_SKILLS[key]=turnCount+BOARD_SKILL_REPEAT_CD;render();
@@ -282,60 +326,134 @@ h1{font-size:clamp(22px,3vw,32px);margin:0 0 8px}.sub{color:var(--muted);margin:
   }
   function createsTriple(i,t){
     const {r,c}=pos(i);
-    return (c>=2&&board[idx(r,c-1)]?.tier===t.tier&&board[idx(r,c-1)]?.chara===t.chara&&board[idx(r,c-2)]?.tier===t.tier&&board[idx(r,c-2)]?.chara===t.chara)
-      ||(r>=2&&board[idx(r-1,c)]?.tier===t.tier&&board[idx(r-1,c)]?.chara===t.chara&&board[idx(r-2,c)]?.tier===t.tier&&board[idx(r-2,c)]?.chara===t.chara);
+    const same=(a,b)=>isMatchable(a)&&isMatchable(b)&&a.tier===b.tier&&a.chara===b.chara;
+    return (c>=2&&same(board[idx(r,c-1)],t)&&same(board[idx(r,c-2)],t))
+      ||(r>=2&&same(board[idx(r-1,c)],t)&&same(board[idx(r-2,c)],t));
+  }
+  function findLines(){
+    const h=[],v=[];
+    const same=(a,b)=>isMatchable(a)&&isMatchable(b)&&a.tier===b.tier&&a.chara===b.chara;
+    for(let r=0;r<SIZE;r++){
+      let c=0;
+      while(c<SIZE){
+        const first=board[idx(r,c)];
+        if(!isMatchable(first)){c++;continue}
+        let e=c+1;while(e<SIZE&&same(board[idx(r,e)],first))e++;
+        if(e-c>=3)h.push({type:'h',cells:Array.from({length:e-c},(_,k)=>idx(r,c+k))});c=e;
+      }
+    }
+    for(let c=0;c<SIZE;c++){
+      let r=0;
+      while(r<SIZE){
+        const first=board[idx(r,c)];
+        if(!isMatchable(first)){r++;continue}
+        let e=r+1;while(e<SIZE&&same(board[idx(e,c)],first))e++;
+        if(e-r>=3)v.push({type:'v',cells:Array.from({length:e-r},(_,k)=>idx(r+k,c))});r=e;
+      }
+    }
+    return {h,v};
+  }
+  function groupsFromLines(lines){
+    // Merge crossing/overlapping runs into connected components.
+    const all=[...lines.h.map(x=>({...x,kind:'h'})),...lines.v.map(x=>({...x,kind:'v'}))];
+    const parent=all.map((_,i)=>i);
+    const root=x=>parent[x]===x?x:(parent[x]=root(parent[x]));
+    const join=(a,b)=>{a=root(a);b=root(b);if(a!==b)parent[b]=a};
+    for(let i=0;i<all.length;i++)for(let j=i+1;j<all.length;j++)if(all[i].cells.some(x=>all[j].cells.includes(x)))join(i,j);
+    const map=new Map();
+    all.forEach((line,i)=>{const k=root(i);if(!map.has(k))map.set(k,{h:[],v:[],cells:new Set(),lines:[]});const g=map.get(k);g[line.kind].push(line);line.cells.forEach(x=>g.cells.add(x));g.lines.push(line)});
+    return [...map.values()];
+  }
+  function stateGradeForGroup(group){
+    if(group.h.length>0&&group.v.length>0)return 's3';
+    if(group.lines.some(line=>line.cells.length>=5))return 's2';
+    if(group.lines.some(line=>line.cells.length===4))return 's1';
+    return null;
+  }
+  function mergedTile(group){
+    const tiles=[...group.cells].map(i=>board[i]).filter(isUnit);
+    if(!tiles.length)return null;
+    const tier=tiles[0].tier;
+    if(tier>=5)return null;
+    const level=Math.min(5,tiles.reduce((sum,t)=>sum+(t.level||0),0));
+    const representative=tiles.slice().sort((a,b)=>(b.level||0)-(a.level||0))[0];
+    return {kind:'unit',chara:representative.chara,tier:tier+1,level,buffs:[],status:null};
+  }
+  function collectPartyForGroup(group){
+    const entries=[...group.cells].map(index=>({tile:board[index],sourceIndex:index})).filter(x=>isUnit(x.tile));
+    if(!entries.length)return [];
+    const skillState=stateGradeForGroup(group);
+    const tier=entries[0].tile.tier;
+    if(tier===5)return entries.map((entry,i)=>({...entry,skillState:i===0?skillState:null}));
+    const maxLevel=Math.max(...entries.map(x=>x.tile.level||0));
+    const candidates=entries.filter(x=>(x.tile.level||0)===maxLevel);
+    const best=candidates[rand(candidates.length)];
+    return [{...best,skillState}];
+  }
+  function addStatusOverlay(cell,t){
+    const st=t?.status;if(!st)return;
+    const overlay=document.createElement('span');overlay.className=`status-overlay status-${st.type}`;
+    const config={chain:{mark:'×',title:'锁链：触发消除后解锁'},freeze:{mark:'❄',title:'冰冻：触发消除后解冻，期间固定不下落'},flight:{mark:'🌀',title:'飞行：倒计时结束后随机交换位置'},paralysis:{mark:'ϟ',title:'麻痹：倒计时期间不参与匹配'}}[st.type];
+    if(config){overlay.textContent=config.mark;overlay.title=config.title;cell.appendChild(overlay)}
+    if((st.type==='flight'||st.type==='paralysis')&&Number(st.turns)>0){const turns=document.createElement('span');turns.className='status-turns';turns.textContent=st.turns;turns.title=`剩余 ${st.turns} 回合`;cell.appendChild(turns)}
+    if(st.type==='paralysis')cell.classList.add('has-paralysis');
+  }
+  function bindTileInteraction(cell,i){
+    cell.draggable=true;
+    cell.addEventListener('dragstart',e=>{if(busy||!canMoveTile(board[i])){e.preventDefault();return}dragFrom=i;cell.classList.add('dragging');e.dataTransfer.setData('text/plain',String(i));e.dataTransfer.effectAllowed='move'});
+    cell.addEventListener('dragend',()=>{cell.classList.remove('dragging');dragFrom=null});
+    cell.addEventListener('dragover',e=>{if(canMoveTile(board[i]))e.preventDefault()});
+    cell.addEventListener('drop',e=>{e.preventDefault();const from=dragFrom??Number(e.dataTransfer.getData('text/plain'));dragFrom=null;swapAction(from,i)});
+    cell.addEventListener('pointerdown',e=>{
+      if(e.pointerType!=='touch'||busy||!canMoveTile(board[i]))return;
+      e.preventDefault();const rect=cell.getBoundingClientRect();
+      touchDrag={from:i,startX:e.clientX,startY:e.clientY,moved:false,ghost:null,offsetX:e.clientX-rect.left,offsetY:e.clientY-rect.top};
+      cell.setPointerCapture?.(e.pointerId);
+    });
+    cell.addEventListener('pointermove',e=>{
+      if(!touchDrag||touchDrag.from!==i)return;
+      e.preventDefault();if(!touchDrag.moved&&Math.hypot(e.clientX-touchDrag.startX,e.clientY-touchDrag.startY)<7)return;
+      if(!touchDrag.moved){touchDrag.moved=true;const rect=cell.getBoundingClientRect();const ghost=cell.cloneNode(true);ghost.classList.remove('selected','swap-anim','match-anim','refill-anim');ghost.classList.add('flyer');ghost.style.position='fixed';ghost.style.left=rect.left+'px';ghost.style.top=rect.top+'px';ghost.style.width=rect.width+'px';ghost.style.height=rect.height+'px';ghost.style.opacity='.72';document.body.appendChild(ghost);touchDrag.ghost=ghost;cell.style.opacity='.28'}
+      if(touchDrag.ghost){touchDrag.ghost.style.left=(e.clientX-touchDrag.offsetX)+'px';touchDrag.ghost.style.top=(e.clientY-touchDrag.offsetY)+'px'}e.preventDefault();
+    });
+    cell.addEventListener('pointerup',e=>{
+      if(!touchDrag||touchDrag.from!==i)return;const drag=touchDrag;touchDrag=null;if(drag.ghost)drag.ghost.remove();cell.style.opacity='';
+      if(drag.moved){suppressClick=true;const target=document.elementFromPoint(e.clientX,e.clientY)?.closest('.tile');if(target){const to=Number(target.dataset.index);if(Number.isInteger(to)&&to!==drag.from)swapAction(drag.from,to)}setTimeout(()=>{suppressClick=false},80)}
+    });
+    cell.addEventListener('pointercancel',()=>{if(touchDrag&&touchDrag.from===i){touchDrag.ghost?.remove();touchDrag=null;cell.style.opacity=''}});
+    cell.addEventListener('click',()=>{if(suppressClick||busy||!canMoveTile(board[i]))return;if(selected===null){selected=i;render()}else if(selected===i){selected=null;render()}else{const from=selected;selected=null;swapAction(from,i)}});
   }
   function render(){
     const root=$('board');root.innerHTML='';
     board.forEach((t,i)=>{
       const cell=document.createElement('div');
-      cell.className=`tile tier-${t.tier}`+(selected===i?' selected':'')+(swapAnim.has(i)?' swap-anim':'')+(matchAnim.has(i)?' match-anim':'')+(refillAnim.has(i)?' refill-anim':'')+(popAnim.has(i)?' pop-anim':'');
-      if(refillAnim.has(i))cell.style.setProperty('--stagger',`${refillDelay.get(i)||0}ms`);
-      cell.dataset.index=i;
-      cell.style.background=tierColors[t.tier-1];
-      cell.style.borderColor=['#c5d0e0','#39b66b','#3288e8','#a65ce5','#f59e0b'][t.tier-1];
-      cell.style.boxShadow=`inset 0 0 0 3px ${['#c5d0e0','#39b66b','#3288e8','#a65ce5','#f59e0b'][t.tier-1]},0 1px 3px #0005`;
-      const im=image(iconFiles[t.chara],names[t.chara]);cell.appendChild(im);
-      if(!im.parentNode){} // failed image falls back to letter below via onerror listener
-      im.onerror=()=>{im.remove();const f=document.createElement('span');f.className='fallback';f.textContent=names[t.chara];cell.appendChild(f)};
-      if(t.buffs?.length)cell.appendChild(buffBadges(t.buffs));
-      const tier=document.createElement('span');tier.className='tier';tier.textContent=`${t.tier===5?'橙':t.tier+'阶'}${t.level>0?' · '+t.level+'级':''}`;cell.appendChild(tier);
-      cell.draggable=true;
-      cell.addEventListener('dragstart',e=>{if(busy){e.preventDefault();return}dragFrom=i;cell.classList.add('dragging');e.dataTransfer.setData('text/plain',String(i));e.dataTransfer.effectAllowed='move'});
-      cell.addEventListener('dragend',()=>{cell.classList.remove('dragging');dragFrom=null});
-      cell.addEventListener('dragover',e=>{e.preventDefault()});
-      cell.addEventListener('drop',e=>{e.preventDefault();const from=dragFrom??Number(e.dataTransfer.getData('text/plain'));dragFrom=null;swapAction(from,i)});
-      // iOS Safari does not consistently support native HTML drag-and-drop on touch screens.
-      cell.addEventListener('pointerdown',e=>{
-        if(e.pointerType!=='touch'||busy)return;
-        e.preventDefault();
-        const rect=cell.getBoundingClientRect();
-        touchDrag={from:i,startX:e.clientX,startY:e.clientY,moved:false,ghost:null,offsetX:e.clientX-rect.left,offsetY:e.clientY-rect.top};
-        cell.setPointerCapture?.(e.pointerId);
-      });
-      cell.addEventListener('pointermove',e=>{
-        if(!touchDrag||touchDrag.from!==i)return;
-        e.preventDefault();
-        if(!touchDrag.moved&&Math.hypot(e.clientX-touchDrag.startX,e.clientY-touchDrag.startY)<7)return;
-        if(!touchDrag.moved){touchDrag.moved=true;const rect=cell.getBoundingClientRect();const ghost=cell.cloneNode(true);ghost.classList.remove('selected','swap-anim','match-anim','refill-anim');ghost.classList.add('flyer');ghost.style.position='fixed';ghost.style.left=rect.left+'px';ghost.style.top=rect.top+'px';ghost.style.width=rect.width+'px';ghost.style.height=rect.height+'px';ghost.style.opacity='.72';ghost.style.transform='scale(1.08)';document.body.appendChild(ghost);touchDrag.ghost=ghost;cell.style.opacity='.28'}
-        if(touchDrag.ghost){touchDrag.ghost.style.left=(e.clientX-touchDrag.offsetX)+'px';touchDrag.ghost.style.top=(e.clientY-touchDrag.offsetY)+'px'}
-        e.preventDefault();
-      });
-      cell.addEventListener('pointerup',e=>{
-        if(!touchDrag||touchDrag.from!==i)return;
-        const drag=touchDrag;touchDrag=null;
-        if(drag.ghost)drag.ghost.remove();cell.style.opacity='';
-        if(drag.moved){suppressClick=true;const target=document.elementFromPoint(e.clientX,e.clientY)?.closest('.tile');if(target){const to=Number(target.dataset.index);if(Number.isInteger(to)&&to!==drag.from)swapAction(drag.from,to)}setTimeout(()=>{suppressClick=false},80)}
-      });
-      cell.addEventListener('pointercancel',()=>{if(touchDrag&&touchDrag.from===i){touchDrag.ghost?.remove();touchDrag=null;cell.style.opacity=''}});
-      // Click/tap two cells remains available as an alternative to dragging.
-      cell.addEventListener('click',()=>{if(suppressClick||busy)return;if(selected===null){selected=i;render()}else if(selected===i){selected=null;render()}else{const from=selected;selected=null;swapAction(from,i)}});
-      root.appendChild(cell);
+      cell.className='tile'+(selected===i?' selected':'')+(swapAnim.has(i)?' swap-anim':'')+(matchAnim.has(i)?' match-anim':'')+(refillAnim.has(i)?' refill-anim':'')+(popAnim.has(i)?' pop-anim':'');
+      if(refillAnim.has(i))cell.style.setProperty('--stagger',`${refillDelay.get(i)||0}ms`);cell.dataset.index=i;
+      if(!t){cell.classList.add('empty-tile');root.appendChild(cell);return}
+      if(isObstacle(t)){
+        cell.classList.add('obstacle-tile',`obstacle-${t.obstacleType}`);
+        if(t.obstacleType==='stone'){
+          const face=document.createElement('span');face.className='obstacle-face';face.title='石块：不能摧毁，可以下落';cell.appendChild(face);
+        }else if(t.obstacleType==='wood'){
+          const face=document.createElement('span');face.className='obstacle-face';face.textContent='木';face.title='木块：四周触发消除时可以清除，可以下落';cell.appendChild(face);
+        }else if(t.obstacleType==='bomb'){
+          const face=document.createElement('span');face.className='bomb-face';face.title='炸弹：倒计时结束爆炸，周围消除累计2次也会消失';
+          const timer=document.createElement('span');timer.className='bomb-timer';timer.textContent=({4:'④',3:'③',2:'②',1:'①',0:'⓪'})[Math.max(0,Math.min(4,Number(t.bombTimer)||0))]||'①';face.appendChild(timer);
+          const count=document.createElement('span');count.className='bomb-count';count.textContent=`▣${Math.max(0,BOMB_NEIGHBOR_CLEAR_LIMIT-(t.bombNeighborClears||0))}`;face.appendChild(count);cell.appendChild(face);
+        }
+      }else{
+        cell.classList.add(`tier-${t.tier}`);cell.style.background=tierColors[t.tier-1];
+        cell.style.borderColor=['#c5d0e0','#39b66b','#3288e8','#a65ce5','#f59e0b'][t.tier-1];
+        cell.style.boxShadow=`inset 0 0 0 3px ${['#c5d0e0','#39b66b','#3288e8','#a65ce5','#f59e0b'][t.tier-1]},0 1px 3px #0005`;
+        const im=image(iconFiles[t.chara],names[t.chara]);cell.appendChild(im);im.onerror=()=>{im.remove();const f=document.createElement('span');f.className='fallback';f.textContent=names[t.chara];cell.appendChild(f)};
+        if(t.buffs?.length)cell.appendChild(buffBadges(t.buffs));
+        const tier=document.createElement('span');tier.className='tier';tier.textContent=`${t.tier===5?'橙':t.tier+'阶'}${t.level>0?' · '+t.level+'级':''}`;cell.appendChild(tier);
+        addStatusOverlay(cell,t);
+      }
+      bindTileInteraction(cell,i);root.appendChild(cell);
     });
-    $('turnCount').textContent=turnCount;
-    $('partyCount').textContent=party.reduce((s,a)=>s+a.length,0);
-    renderParty();updateSkillUI();renderRefillPreview();
-    root.classList.remove('disabled');
+    $('turnCount').textContent=turnCount;$('partyCount').textContent=party.reduce((sum,items)=>sum+items.length,0);
+    renderParty();updateSkillUI();renderRefillPreview();root.classList.remove('disabled');
   }
   function renderParty(){
     const root=$('party');root.innerHTML='';root.className='commander-list';
@@ -355,7 +473,7 @@ h1{font-size:clamp(22px,3vw,32px);margin:0 0 8px}.sub{color:var(--muted);margin:
       const content=document.createElement('div');content.style.minWidth='0';
       const name=document.createElement('div');name.className='commander-name';name.textContent=`主将 ${names[chara]} · ${party[chara].length} 名士兵`;content.appendChild(name);
       const meter=document.createElement('div');meter.style.cssText='margin:0 0 6px';
-      meter.innerHTML=`<div class="energy-head" style="margin-bottom:3px"><span>主将技能槽</span><strong style="font-size:11px"><span id="commanderEnergy${chara}">${commanderEnergy[chara]}</span>/100</strong></div><div class="energy-track"><div class="energy-fill ${commanderEnergy[chara]>=100?'ready':''}" id="commanderEnergyFill${chara}" style="width:${commanderEnergy[chara]}%"></div></div>`;
+      meter.innerHTML=`<div class="energy-head" style="margin-bottom:3px"><span>主将技能槽</span><strong style="font-size:11px"><span id="commanderEnergy${chara}">${commanderEnergy[chara]}</span>/20</strong></div><div class="energy-track"><div class="energy-fill ${commanderEnergy[chara]>=ENERGY_CAP?'ready':''}" id="commanderEnergyFill${chara}" style="width:${commanderEnergy[chara]/ENERGY_CAP*100}%"></div></div>`;
       content.appendChild(meter);
       const soldiers=document.createElement('div');soldiers.className='commander-soldiers';
       if(!party[chara].length){const empty=document.createElement('span');empty.className='commander-empty';empty.textContent='暂无上阵士兵';soldiers.appendChild(empty)}
@@ -366,58 +484,6 @@ h1{font-size:clamp(22px,3vw,32px);margin:0 0 8px}.sub{color:var(--muted);margin:
         soldiers.appendChild(unit)});
       content.appendChild(soldiers);card.appendChild(portrait);card.appendChild(content);root.appendChild(card);
     }
-  }
-  function findLines(){
-    const h=[],v=[];
-    for(let r=0;r<SIZE;r++){let c=0;while(c<SIZE){let e=c+1;while(e<SIZE&&board[idx(r,e)].tier===board[idx(r,c)].tier&&board[idx(r,e)].chara===board[idx(r,c)].chara)e++;if(e-c>=3)h.push({type:'h',cells:Array.from({length:e-c},(_,k)=>idx(r,c+k))});c=e}}
-    for(let c=0;c<SIZE;c++){let r=0;while(r<SIZE){let e=r+1;while(e<SIZE&&board[idx(e,c)].tier===board[idx(r,c)].tier&&board[idx(e,c)].chara===board[idx(r,c)].chara)e++;if(e-r>=3)v.push({type:'v',cells:Array.from({length:e-r},(_,k)=>idx(r+k,c))});r=e}}
-    return {h,v};
-  }
-  function groupsFromLines(lines){
-    // Merge crossing/overlapping runs into connected components.
-    const all=[...lines.h.map(x=>({...x,kind:'h'})),...lines.v.map(x=>({...x,kind:'v'}))];
-    const parent=all.map((_,i)=>i);
-    const root=x=>parent[x]===x?x:(parent[x]=root(parent[x]));
-    const join=(a,b)=>{a=root(a);b=root(b);if(a!==b)parent[b]=a};
-    for(let i=0;i<all.length;i++)for(let j=i+1;j<all.length;j++){
-      if(all[i].cells.some(x=>all[j].cells.includes(x)))join(i,j);
-    }
-    const map=new Map();
-    all.forEach((line,i)=>{const k=root(i);if(!map.has(k))map.set(k,{h:[],v:[],cells:new Set(),lines:[]});const g=map.get(k);g[line.kind].push(line);line.cells.forEach(x=>g.cells.add(x));g.lines.push(line)});
-    return [...map.values()];
-  }
-  function stateGradeForGroup(group){
-    // 只取最高档：横纵交叉 > 直线五连及以上 > 直线四连。
-    if(group.h.length>0&&group.v.length>0)return 's3';
-    if(group.lines.some(line=>line.cells.length>=5))return 's2';
-    if(group.lines.some(line=>line.cells.length===4))return 's1';
-    return null;
-  }
-  function mergedTile(group){
-    const tiles=[...group.cells].map(i=>board[i]).filter(Boolean);
-    if(!tiles.length)return null;
-    const tier=tiles[0].tier;
-    // 橙色是最高阶：橙色棋子匹配后全部消除并上阵，不再生成不存在的更高阶棋子。
-    if(tier>=5)return null;
-    // 只有同角色、同阶级的匹配会到达这里，合成产物保留该角色并严格高一阶。
-    const level=Math.min(5,tiles.reduce((sum,t)=>sum+(t.level||0),0));
-    const representative=tiles.slice().sort((a,b)=>(b.level||0)-(a.level||0))[0];
-    return {chara:representative.chara,tier:tier+1,level,buffs:[]};
-  }
-  function collectPartyForGroup(group){
-    const entries=[...group.cells].map(index=>({tile:board[index],sourceIndex:index})).filter(x=>x.tile);
-    if(!entries.length)return [];
-    const skillState=stateGradeForGroup(group);
-    const tier=entries[0].tile.tier;
-    if(tier===5){
-      // 最高阶组不再合成；该组所有橙色士兵上阵，但整组技能只发动一次。
-      return entries.map((entry,i)=>({...entry,skillState:i===0?skillState:null}));
-    }
-    // 普通组上阵一名士兵：优先较高等级；完全并列时随机选取。
-    const maxLevel=Math.max(...entries.map(x=>x.tile.level||0));
-    const candidates=entries.filter(x=>(x.tile.level||0)===maxLevel);
-    const best=candidates[rand(candidates.length)];
-    return [{...best,skillState}];
   }
   async function flyToParty(entry){
     const source=$('board').querySelector(`[data-index="${entry.sourceIndex}"]`);
@@ -464,73 +530,154 @@ h1{font-size:clamp(22px,3vw,32px);margin:0 0 8px}.sub{color:var(--muted);margin:
     await Promise.all(motions);
   }
 
+  async function settleBoard(removals=new Set(),outputs=[],forcedFrozenAnchors=new Set()){
+    const nextBoard=new Array(SIZE*SIZE),newRefillAnim=new Set(),newPopAnim=new Set(),newRefillDelay=new Map();
+    for(let c=0;c<SIZE;c++){
+      const frozenRows=[];
+      for(let r=0;r<SIZE;r++){
+        const oldIndex=idx(r,c),t=board[oldIndex];
+        if(t&&!removals.has(oldIndex)&&(t.status?.type==='freeze'||forcedFrozenAnchors.has(oldIndex)))frozenRows.push(r);
+      }
+      const colCreated=outputs.filter(item=>pos(item.place).c===c).sort((a,b)=>pos(a.place).r-pos(b.place).r);
+      const slots=new Array(SIZE).fill(null),anchorKinds=new Map();
+      frozenRows.forEach(row=>{const oldIndex=idx(row,c);slots[row]={tile:copyTile(board[oldIndex]),kind:'frozen'};anchorKinds.set(row,'frozen')});
+      colCreated.forEach(item=>{const row=pos(item.place).r;if(!slots[row]){slots[row]={tile:copyTile(item.tile),kind:'created',group:item.group};anchorKinds.set(row,'created')}});
+      const anchorRows=[...anchorKinds.keys()].sort((a,b)=>a-b);const segments=[];let segmentStart=0;
+      for(const anchorRow of anchorRows){segments.push([segmentStart,anchorRow-1,segmentStart>0&&anchorKinds.get(segmentStart-1)==='frozen']);segmentStart=anchorRow+1;}
+      segments.push([segmentStart,SIZE-1,segmentStart>0&&anchorKinds.get(segmentStart-1)==='frozen']);
+      for(const [startRow,endRow,blockedBelowFreeze] of segments){
+        if(startRow>endRow)continue;
+        if(blockedBelowFreeze){
+          // 冰冻格下方本轮不下落也不补块，消除造成的空位暂时悬空。
+          for(let r=startRow;r<=endRow;r++){const oldIndex=idx(r,c);if(!removals.has(oldIndex)&&board[oldIndex])slots[r]={tile:copyTile(board[oldIndex]),kind:'survivor',from:r};}
+          continue;
+        }
+        const segmentSurvivors=[];
+        for(let r=startRow;r<=endRow;r++){const oldIndex=idx(r,c);if(!removals.has(oldIndex)&&board[oldIndex])segmentSurvivors.push({tile:board[oldIndex],from:r,kind:'survivor'})}
+        let si=segmentSurvivors.length-1;
+        for(let r=endRow;r>=startRow;r--)if(!slots[r]&&si>=0)slots[r]=segmentSurvivors[si--];
+        for(let r=startRow;r<=endRow;r++)if(!slots[r])slots[r]={tile:takeRefillTile(),kind:'refill',from:-1};
+      }
+      slots.forEach((item,r)=>{const newIndex=idx(r,c);nextBoard[newIndex]=item?.tile??null;if(item?.kind==='created')newPopAnim.add(newIndex);if(item?.kind==='refill'||(item?.kind==='survivor'&&item.from!==r)){newRefillAnim.add(newIndex);newRefillDelay.set(newIndex,r*65+c*24)}});
+    }
+    board=nextBoard;refillAnim=newRefillAnim;popAnim=newPopAnim;refillDelay=newRefillDelay;selected=null;render();
+    await wait(420);refillAnim.clear();popAnim.clear();refillDelay.clear();render();
+  }
+  function orthogonalNeighbors(index){
+    const {r,c}=pos(index);return [[r-1,c],[r+1,c],[r,c-1],[r,c+1]].filter(([rr,cc])=>isValid(rr,cc)).map(([rr,cc])=>idx(rr,cc));
+  }
+  function sameMatchGroupHasAnchor(group){return [...group.cells].some(i=>['chain','freeze'].includes(board[i]?.status?.type));}
+  function processMatchGroups(groups){
+    const removals=new Set(),chargedUnits=new Set(),preservedAnchors=new Set(),normalGroups=[],partyEntries=[];
+    for(const group of groups){
+      const cells=[...group.cells],hasAnchor=sameMatchGroupHasAnchor(group);
+      if(hasAnchor){
+        for(const index of cells){
+          const t=board[index];
+          if(['chain','freeze'].includes(t?.status?.type)){
+            if(t.status.type==='freeze')preservedAnchors.add(index);
+            t.status=null;
+          }else if(isUnit(t)){removals.add(index);chargedUnits.add(index)}
+        }
+        // 锁链/冰冻组只解状态，不上阵、不合成，组内其他角色格消失。
+        continue;
+      }
+      normalGroups.push(group);
+      for(const index of cells){if(isUnit(board[index])){removals.add(index);chargedUnits.add(index)}}
+      partyEntries.push(...collectPartyForGroup(group));
+    }
+    // 木块被相邻的实际角色消除波及；石块不受普通消除影响。
+    const matchedClears=new Set(removals);
+    for(let i=0;i<board.length;i++)if(isObstacle(board[i])&&board[i].obstacleType==='wood'){
+      if(orthogonalNeighbors(i).some(n=>matchedClears.has(n)))removals.add(i);
+    }
+    // 炸弹在相邻消除事件中累计；同一波有多个邻格消失也只记一次。
+    for(let i=0;i<board.length;i++)if(isObstacle(board[i])&&board[i].obstacleType==='bomb'&&!removals.has(i)){
+      if(orthogonalNeighbors(i).some(n=>removals.has(n))){board[i].bombNeighborClears=(board[i].bombNeighborClears||0)+1;if(board[i].bombNeighborClears>=BOMB_NEIGHBOR_CLEAR_LIMIT)removals.add(i)}
+    }
+    const energyAward=awardClearEnergy(chargedUnits);
+    const outputs=normalGroups.map(g=>({group:g,tile:mergedTile(g)})).filter(item=>item.tile!==null);
+    return {removals,chargedUnits,preservedAnchors,normalGroups,partyEntries,energyAward,outputs};
+  }
   async function resolveMatches(playerMove=false,swapIndices=[]){
     let chain=0,totalGained=0;
     while(chain<30){
-      const lines=findLines();
-      if(!lines.h.length&&!lines.v.length)break;
+      const lines=findLines();if(!lines.h.length&&!lines.v.length)break;
       chain++;
       const groups=groupsFromLines(lines);
-      const removals=new Set();
-      const partyEntries=groups.flatMap(g=>{
-        g.cells.forEach(i=>removals.add(i));
-        return collectPartyForGroup(g);
-      });
-      const energyAward=awardClearEnergy(groups);
+      const processed=processMatchGroups(groups);
+      const {removals,preservedAnchors,partyEntries,energyAward,outputs,normalGroups}=processed;
       totalGained+=energyAward.total;
-      // 每组只生成一个产物；直接交换触发的组优先在对应交换格生成，补块触发则落在该组最左下格。
-      const outputs=groups.map(g=>({group:g,tile:mergedTile(g)})).filter(item=>item.tile!==null);
+      // 触发组无锁链/冰冻锚点时才生成合成产物；交换生成点沿用原规则。
       outputs.forEach(item=>{
-        if(playerMove&&chain===1){
-          const [a,b]=swapIndices;
-          if(item.group.cells.has(a)&&item.group.cells.has(b))item.place=b;
-          else if(item.group.cells.has(a))item.place=a;
-          else if(item.group.cells.has(b))item.place=b;
-          else item.place=chooseAutoPosition(item.group);
-        }else item.place=chooseAutoPosition(item.group);
+        if(playerMove&&chain===1){const [a,b]=swapIndices;if(item.group.cells.has(a)&&item.group.cells.has(b))item.place=b;else if(item.group.cells.has(a))item.place=a;else if(item.group.cells.has(b))item.place=b;else item.place=chooseAutoPosition(item.group)}
+        else item.place=chooseAutoPosition(item.group);
       });
+      if(!removals.size&&!preservedAnchors.size)break;
       matchAnim=new Set(removals);swapAnim.clear();refillAnim.clear();popAnim.clear();refillDelay.clear();render();
-      $('log').textContent=`第 ${chain} 连：消除 ${removals.size} 个棋子；技能槽获得 ${energySummary(energyAward.byCommander)}；正在合成……`;
-      await wait(320);
-      await animateConvergence(groups,outputs);
-      matchAnim.clear();render();
+      $('log').textContent=`第 ${chain} 连：消除 ${removals.size} 格；主将技能槽 +${energySummary(energyAward.byCommander)}；正在结算……`;
+      await wait(320);await animateConvergence(normalGroups,outputs);matchAnim.clear();render();
       const deploySkillMessages=(await Promise.all(partyEntries.map(entry=>flyToParty(entry)))).filter(Boolean);
-      const nextBoard=new Array(SIZE*SIZE);
-      const newRefillAnim=new Set(),newPopAnim=new Set(),newRefillDelay=new Map();
-      for(let c=0;c<SIZE;c++){
-        const survivors=[];
-        for(let r=0;r<SIZE;r++){const oldIndex=idx(r,c);if(!removals.has(oldIndex))survivors.push({tile:board[oldIndex],from:r,kind:'survivor'})}
-        const colCreated=outputs.filter(item=>pos(item.place).c===c).sort((a,b)=>pos(a.place).r-pos(b.place).r);
-        const slots=new Array(SIZE).fill(null);
-        const anchorRows=[];
-        colCreated.forEach(item=>{
-          const row=pos(item.place).r;
-          if(!slots[row]){slots[row]={tile:copyTile(item.tile),kind:'created',group:item.group};anchorRows.push(row)}
-        });
-        // 合成块是固定落点的障碍：原本在它上方的存活棋子不能穿过它掉到下方。
-        // 按合成块所在行把每列分成若干段，每段只让本段原有棋子向下沉降，段内空位再由补块填充。
-        anchorRows.sort((a,b)=>a-b);
-        const segments=[];let segmentStart=0;
-        for(const anchorRow of anchorRows){segments.push([segmentStart,anchorRow-1]);segmentStart=anchorRow+1;}
-        segments.push([segmentStart,SIZE-1]);
-        for(const [startRow,endRow] of segments){
-          if(startRow>endRow)continue;
-          const segmentSurvivors=survivors.filter(item=>item.from>=startRow&&item.from<=endRow);
-          let si=segmentSurvivors.length-1;
-          for(let r=endRow;r>=startRow;r--){if(!slots[r]&&si>=0)slots[r]=segmentSurvivors[si--];}
-          // 每个被合成块隔开的区段独立补满，避免补块/存活块跨过合成块。
-          for(let r=startRow;r<=endRow;r++)if(!slots[r])slots[r]={tile:takeRefillTile(),kind:'refill',from:-1};
-        }
-        slots.forEach((item,r)=>{const newIndex=idx(r,c);nextBoard[newIndex]=item.tile;if(item.kind==='created')newPopAnim.add(newIndex);if(item.kind==='refill'||(item.kind==='survivor'&&item.from!==r)){newRefillAnim.add(newIndex);newRefillDelay.set(newIndex,r*65+c*24)}});
-      }
-      board=nextBoard;refillAnim=newRefillAnim;popAnim=newPopAnim;refillDelay=newRefillDelay;selected=null;render();
-      $('log').textContent=`消除 ${removals.size} 个棋子，生成 ${outputs.length} 个合成棋子；技能槽获得 ${energySummary(energyAward.byCommander)}${deploySkillMessages.length?'；'+deploySkillMessages.join('；'):''}`;
-      await wait(650);refillAnim.clear();popAnim.clear();refillDelay.clear();render();
-      $('log').textContent=`本轮累计技能槽 +${totalGained}；第 ${chain} 连结算完成。`;
+      await settleBoard(removals,outputs,preservedAnchors);
+      $('log').textContent=`本次消除 ${removals.size} 格，生成 ${outputs.length} 个合成棋子；主将技能槽 +${energySummary(energyAward.byCommander)}${deploySkillMessages.length?'；'+deploySkillMessages.join('；'):''}`;
       playerMove=false;
     }
     matchAnim.clear();refillAnim.clear();popAnim.clear();refillDelay.clear();swapAnim.clear();render();
     return chain>0;
+  }
+  async function resolveExternalClear(indices,message){
+    const removals=new Set([...indices].filter(i=>Number.isInteger(i)&&i>=0&&i<board.length&&board[i]));
+    if(!removals.size)return;
+    matchAnim=new Set(removals);selected=null;render();$('log').textContent=message;await wait(260);matchAnim.clear();
+    await settleBoard(removals,[],new Set());await resolveMatches(false,[]);
+  }
+  async function processEndOfTurn(){
+    const expiredBombs=[],expiredFlights=[];let timerChanged=false;
+    for(let i=0;i<board.length;i++){
+      const t=board[i];if(!t)continue;
+      if(isObstacle(t)&&t.obstacleType==='bomb'){
+        t.bombTimer=Number(t.bombTimer)-1;timerChanged=true;if(t.bombTimer<=0)expiredBombs.push(i);
+      }else if(isUnit(t)&&t.status&&['flight','paralysis'].includes(t.status.type)){
+        t.status.turns=Number(t.status.turns)-1;timerChanged=true;
+        if(t.status.turns<=0){if(t.status.type==='flight')expiredFlights.push(i);else t.status=null;}
+      }
+    }
+    if(expiredBombs.length){
+      const blast=new Set(),queue=[...expiredBombs],seen=new Set();
+      while(queue.length){const i=queue.shift();if(seen.has(i)||!board[i])continue;seen.add(i);blast.add(i);for(const n of orthogonalNeighbors(i)){if(board[n])blast.add(n);if(isObstacle(board[n])&&board[n].obstacleType==='bomb'&&!seen.has(n))queue.push(n)}}
+      await resolveExternalClear(blast,'炸弹倒计时结束，爆炸并清除上下左右相邻的格子！');
+    }else if(timerChanged){render()}
+    let flightChanged=false;
+    for(const i of expiredFlights){
+      const flying=board[i];if(!isUnit(flying)||flying.status?.type!=='flight')continue;
+      const targets=board.map((t,index)=>({t,index})).filter(x=>x.index!==i&&isUnit(x.t)&&!x.t.status);
+      if(!targets.length){flying.status=null;flightChanged=true;continue}
+      const target=targets[rand(targets.length)];flying.status=null;[board[i],board[target.index]]=[board[target.index],board[i]];flightChanged=true;
+      $('log').textContent=`飞行状态结束：${names[flying.chara]} 头像随机交换位置。`;
+    }
+    if(flightChanged){render();await resolveMatches(false,[])}
+    else if(timerChanged)await resolveMatches(false,[]);
+    if(turnCount>=nextBoardEventTurn){await applyScheduledBoardEvent();nextBoardEventTurn=turnCount+intervalRandom();}
+  }
+  function applyScheduledBoardEvent(){
+    const selectedObstacles=selectedOptions('obstacleType'),selectedStatuses=selectedOptions('statusType');
+    const options=[...selectedObstacles.map(type=>({kind:'obstacle',type})),...selectedStatuses.map(type=>({kind:'status',type}))];
+    if(!options.length){$('log').textContent=`第 ${turnCount} 回合：本关未选择障碍块或状态块，本次没有生成效果。`;return}
+    const chosen=options[rand(options.length)];
+    const candidates=board.map((tile,index)=>({tile,index,tie:Math.random()})).filter(x=>isUnit(x.tile)&&!x.tile.status)
+      .sort((a,b)=>a.tile.tier-b.tile.tier||(a.tile.level||0)-(b.tile.level||0)||a.tie-b.tie);
+    const count=Math.min(countRandom(),candidates.length);
+    const targets=candidates.slice(0,count);
+    if(!targets.length){$('log').textContent='周期效果触发，但盘面没有可施加效果的普通头像。';return}
+    for(const {tile,index} of targets){
+      if(chosen.kind==='obstacle')board[index]=makeObstacle(chosen.type);
+      else {
+        const status={type:chosen.type};if(chosen.type==='flight')status.turns=FLIGHT_TURNS;if(chosen.type==='paralysis')status.turns=PARALYSIS_TURNS;
+        tile.status=status;
+      }
+    }
+    const labels={stone:'石块',wood:'木块',bomb:'炸弹',chain:'锁链',freeze:'冰冻',flight:'飞行',paralysis:'麻痹'};
+    render();$('log').textContent=`第 ${turnCount} 回合触发周期效果：${labels[chosen.type]}，影响 ${targets.length} 个最低阶/最低级头像。`;
   }
   function chooseAutoPosition(g){
     // 自动连锁/补块引发的消除：产物落在该消除组的最左下位置。
@@ -538,26 +685,26 @@ h1{font-size:clamp(22px,3vw,32px);margin:0 0 8px}.sub{color:var(--muted);margin:
   }
   function stateSignature(tile){return uniqueBuffs(tile?.buffs||[]).slice().sort().join(',')}
   async function swapAction(a,b){
-    if(busy||!Number.isInteger(a)||!Number.isInteger(b)||a===b)return;
+    if(busy||!Number.isInteger(a)||!Number.isInteger(b)||a===b||a<0||b<0||a>=board.length||b>=board.length)return;
     const ta=board[a],tb=board[b];
-    if(ta&&tb&&ta.chara===tb.chara&&ta.tier===tb.tier&&(ta.level||0)===(tb.level||0)&&stateSignature(ta)===stateSignature(tb)){ 
-      selected=null;render();$('log').textContent='你交换了两个角色、阶级与状态完全相同的棋子，不扣步数。';return;
+    if(!ta||!tb)return;
+    if(isObstacle(ta)||isObstacle(tb)){selected=null;render();$('log').textContent='障碍块不能直接交换位置。';return}
+    if(!canMoveTile(ta)||!canMoveTile(tb)){selected=null;render();$('log').textContent='锁链或冰冻状态中的头像不能移动。';return}
+    if(isUnit(ta)&&isUnit(tb)&&ta.chara===tb.chara&&ta.tier===tb.tier&&(ta.level||0)===(tb.level||0)&&stateSignature(ta)===stateSignature(tb)&&JSON.stringify(ta.status||null)===JSON.stringify(tb.status||null)){
+      selected=null;render();$('log').textContent='你交换了两个角色、阶级、等级与状态完全相同的棋子，不扣步数。';return;
     }
-    busy=true;selected=null;turnCount++;
-    [board[a],board[b]]=[board[b],board[a]];
-    swapAnim=new Set([a,b]);matchAnim.clear();refillAnim.clear();render();
-    await wait(240);swapAnim.clear();render();
-    const lines=findLines();
-    if(lines.h.length||lines.v.length){await resolveMatches(true,[a,b]);$('log').textContent+=' 可以继续操作。'}
+    busy=true;selected=null;turnCount++;[board[a],board[b]]=[board[b],board[a]];
+    swapAnim=new Set([a,b]);matchAnim.clear();refillAnim.clear();render();await wait(240);swapAnim.clear();render();
+    const lines=findLines();if(lines.h.length||lines.v.length){await resolveMatches(true,[a,b]);$('log').textContent+=' 可以继续操作。'}
     else $('log').textContent='已交换棋子，当前没有触发消除。';
-    tickCooldownsSafe();busy=false;render();
+    await processEndOfTurn();busy=false;render();
   }
   function tickCooldownsSafe(){updateSkillUI()}
   function start(){
-    turnCount=0;commanderEnergy=[0,0,0,0];for(const k of Object.keys(BOARD_SKILLS))BOARD_SKILLS[k]=BOARD_SKILL_INITIAL_CD[k];activeCommanderEffects=[[],[],[],[]];commanderBattleStats=Array.from({length:N},()=>({shieldStacks:0,attackStacks:0}));enemyUnits=[];tier2Refills=0;frontBoostRefills=0;refillQueue=[];
+    turnCount=0;commanderEnergy=[0,0,0,0];for(const k of Object.keys(BOARD_SKILLS))BOARD_SKILLS[k]=BOARD_SKILL_INITIAL_CD[k];activeCommanderEffects=[[],[],[],[]];commanderBattleStats=Array.from({length:N},()=>({shieldStacks:0,attackStacks:0}));enemyUnits=[];tier2Refills=0;frontBoostRefills=0;refillQueue=[];nextBoardEventTurn=intervalRandom();
     party=[[],[],[],[]];selected=null;busy=false;swapAnim.clear();matchAnim.clear();refillAnim.clear();popAnim.clear();refillDelay.clear();
     let tries=0;do{initialBoard();tries++}while((findLines().h.length||findLines().v.length)&&tries<100);
-    $('setup').style.display='none';$('game').style.display='block';$('log').textContent='游戏开始！相同角色、相同阶级的棋子横/纵连成3个以上即可消除并升阶；四连技能Ⅰ、直线五连以上技能Ⅱ、横纵交叉技能Ⅲ，上阵时触发。每个被消除棋子按阶级给所属主将充能。';render();
+    $('setup').style.display='none';$('game').style.display='block';$('log').textContent='游戏开始！相同角色、相同阶级的棋子横/纵连成3个以上即可消除并升阶；每位主将技能槽上限20。每隔5～7回合，随机生成已选障碍或状态，影响1～2个最低阶/最低级头像。';render();
   }
   $('boardSkills').addEventListener('click',e=>{const btn=e.target.closest('[data-skill]');if(btn)useBoardSkill(btn.dataset.skill)});
   // iOS Safari：触摸棋盘或拖动头像时禁止页面跟随手指滚动。
@@ -565,6 +712,12 @@ h1{font-size:clamp(22px,3vw,32px);margin:0 0 8px}.sub{color:var(--muted);margin:
     if($('game').style.display!=='none' && (touchDrag || e.target.closest?.('.board'))){e.preventDefault();}
   },{passive:false});
   document.addEventListener('gesturestart',e=>{if(e.target.closest?.('.board'))e.preventDefault();},{passive:false});
+  for(const groupId of ['obstacleChoices','statusChoices']){
+    const group=$(groupId);group?.addEventListener('change',e=>{
+      const input=e.target;if(input?.type!=='checkbox'||!input.checked)return;
+      group.querySelectorAll('input[type=checkbox]').forEach(other=>{if(other!==input)other.checked=false});
+    });
+  }
   $('startBtn').addEventListener('click',start);
   $('restartBtn').addEventListener('click',()=>{$('game').style.display='none';$('setup').style.display='block';$('setupError').textContent='';});
 })();
