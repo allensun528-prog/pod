@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<title>角色三消合成原型 v0.4.4</title>
+<title>角色三消合成原型 v0.4.6</title>
 <style>
 :root{--bg:#101522;--panel:#1b2335;--line:#303c54;--text:#eef3ff;--muted:#9caac4;--accent:#78d8bd}
 *{box-sizing:border-box}html{overscroll-behavior:none}body{margin:0;background:radial-gradient(circle at top,#202c43,#101522 55%);color:var(--text);font-family:system-ui,-apple-system,"Segoe UI",sans-serif;padding:22px;min-height:100vh;min-height:100dvh;padding: max(10px,env(safe-area-inset-top)) max(10px,env(safe-area-inset-right)) max(10px,env(safe-area-inset-bottom)) max(10px,env(safe-area-inset-left));overscroll-behavior:none}
@@ -33,8 +33,18 @@ h1{font-size:clamp(22px,3vw,32px);margin:0 0 8px}.sub{color:var(--muted);margin:
 
 
 .commander-list{display:flex;flex-direction:column;gap:9px}.commander-card{position:relative;display:grid;grid-template-columns:64px minmax(0,1fr);gap:8px;align-items:start;padding:7px;border:1px solid var(--line);border-radius:11px;background:#121a29;min-width:0}.commander-portrait{position:relative;width:64px;height:64px;border:2px solid #e5edf9;border-radius:10px;background:#f2f4f8;overflow:visible;box-shadow:0 2px 8px #0004}.commander-portrait>img{width:100%;height:100%;object-fit:contain;border-radius:8px;mix-blend-mode:multiply}.commander-name{font-size:12px;font-weight:900;margin-bottom:5px}.commander-effects{position:absolute;left:50%;top:-11px;transform:translateX(-50%);display:flex;gap:2px;z-index:5;white-space:nowrap}.commander-effect{display:inline-flex;align-items:center;justify-content:center;min-width:20px;height:20px;padding:0 4px;border-radius:50%;background:#ffe08a;color:#3a2600;border:1px solid #fff;font-size:11px;font-weight:950;box-shadow:0 2px 8px #0008}.commander-soldiers{display:flex;gap:4px;flex-wrap:wrap;min-height:25px;align-content:flex-start}.commander-soldier{position:relative;width:25px;height:25px;border:1px solid #eaf0fa;border-radius:5px;overflow:visible;background:#fff}.commander-soldier img{width:100%;height:100%;object-fit:contain;border-radius:4px;mix-blend-mode:multiply}.commander-soldier .soldier-tier{position:absolute;right:-4px;bottom:-4px;padding:0 2px;border-radius:3px;background:#101827;color:#fff;border:1px solid #fff;font-size:8px;line-height:12px}.commander-soldier .soldier-state{position:absolute;left:-4px;top:-5px;padding:0 2px;border-radius:4px;background:#ffe08a;color:#342300;font-size:8px;font-weight:900}.commander-empty{font-size:10px;color:#71809b;padding:4px 0}.side .skill-panel{margin-top:10px}.layout{grid-template-columns:minmax(225px,270px) minmax(0,420px)}
-@media(max-width:760px){.layout{grid-template-columns:minmax(0,.82fr) minmax(0,1.18fr)}.commander-card{grid-template-columns:clamp(38px,10vw,54px) minmax(0,1fr);gap:6px;padding:5px}.commander-portrait{width:clamp(38px,10vw,54px);height:clamp(38px,10vw,54px)}.commander-name{font-size:10px;margin-bottom:3px}.commander-soldier{width:clamp(17px,4.4vw,22px);height:clamp(17px,4.4vw,22px)}.commander-list{gap:5px}.commander-effect{min-width:16px;height:16px;font-size:9px}.side .skill-panel{padding:6px}.side .skill-desc{font-size:9px}.side .hint{font-size:9px}}
+@media(max-width:760px){.layout{grid-template-columns:minmax(0,.82fr) minmax(0,1.18fr)}.commander-card{grid-template-columns:clamp(38px,10vw,54px) minmax(0,1fr);gap:6px;padding:5px}.commander-portrait{width:clamp(38px,10vw,54px);height:clamp(38px,10vw,54px)}.commander-name{font-size:10px;margin-bottom:3px}.commander-soldier{width:clamp(17px,4.4vw,22px);height:clamp(17px,4.4vw,22px)}.commander-list{gap:5px}.commander-effect{min-width:16px;height:16px;font-size:9px}.side .skill-panel{padding:6px}.side .skill-desc{font-size:9px}.side .skill-description-list>div{font-size:9px;padding:4px}.side .skill-description-list strong{font-size:9px}.side .skill-description-list span{font-size:9px}.side .hint{font-size:9px}}
 @media (orientation:portrait) and (max-width:760px){.layout{grid-template-columns:1fr}.side{order:2}.board-wrap{order:1;max-width:min(100%,520px)}.side .party{grid-template-columns:1fr}}
+
+
+.skill-description-list{display:flex;flex-direction:column;gap:6px;margin-top:8px}
+.skill-description-list>div{display:flex;flex-direction:column;gap:1px;padding:5px 6px;border-radius:6px;background:#111827;border:1px solid #34415a;font-size:10px;line-height:1.4}
+.skill-description-list strong{color:#ffe08a;font-size:10px}
+.skill-description-list span{color:#c4d0e5}
+.skill-floating{position:fixed;z-index:9999;pointer-events:none;transform:translate(-50%,0);max-width:min(300px,80vw);padding:5px 9px;border:1px solid #fff;border-radius:999px;background:#101827;color:#fff4c7;font-weight:900;font-size:13px;line-height:1.3;text-align:center;white-space:normal;box-shadow:0 4px 14px #0009;animation:skillFloatUp 1.55s ease-out forwards}
+.skill-floating.s2{color:#ffd4b8;border-color:#ff9d78}
+.skill-floating.s3{color:#c8ffe3;border-color:#78d8bd}
+@keyframes skillFloatUp{0%{opacity:0;transform:translate(-50%,8px) scale(.88)}12%{opacity:1;transform:translate(-50%,0) scale(1)}100%{opacity:0;transform:translate(-50%,-48px) scale(1.02)}}
 
 </style>
 </head>
@@ -42,7 +52,7 @@ h1{font-size:clamp(22px,3vw,32px);margin:0 0 8px}.sub{color:var(--muted);margin:
 <div class="wrap">
   <section class="panel setup" id="setup">
     <h1>角色三消合成</h1>
-    <p class="sub">6 × 6 棋盘 · 四位主将 · 同阶升阶 · 混阶充能 · 多连附加状态</p>
+    <p class="sub">6 × 6 棋盘 · 四位主将 · 同角色同阶消除升阶 · 主将独立充能 · 多连技能</p>
     <div class="error" id="setupError"></div>
     <button id="startBtn" style="width:100%;margin-top:8px">进入游戏</button>
     <p class="hint">头像素材请与本 HTML 放在同一文件夹：icon_a.png、icon_b.png、icon_c.png、icon_d.png，以及 chara_a.png、chara_b.png、chara_c.png、chara_d.png。</p>
@@ -50,7 +60,7 @@ h1{font-size:clamp(22px,3vw,32px);margin:0 0 8px}.sub{color:var(--muted);margin:
 
   <section class="game" id="game">
     <div class="topbar">
-      <div><h1>角色三消合成 <span id="versionTag" style="display:inline-block;vertical-align:middle;font-size:11px;font-weight:800;padding:4px 7px;border:1px solid #60708a;border-radius:7px;color:#ffe08a;background:#111827">版本 v0.4.4 · 修复交换拦截</span></h1><p class="sub" style="margin:4px 0 0">拖动或依次点击两个头像交换；没有步数上限。</p></div>
+      <div><h1>角色三消合成 <span id="versionTag" style="display:inline-block;vertical-align:middle;font-size:11px;font-weight:800;padding:4px 7px;border:1px solid #60708a;border-radius:7px;color:#ffe08a;background:#111827">版本 v0.4.7 · 同角色同阶匹配</span></h1><p class="sub" style="margin:4px 0 0">拖动或依次点击两个头像交换；没有步数上限。</p></div>
       <div class="stats"><div class="stat">步数<strong id="turnCount">0</strong></div><div class="stat">上阵人数<strong id="partyCount">0</strong></div></div>
       <button class="secondary" id="restartBtn">重新开始</button>
     </div>
@@ -59,15 +69,20 @@ h1{font-size:clamp(22px,3vw,32px);margin:0 0 8px}.sub{color:var(--muted);margin:
         <h2>主将与士兵</h2>
         <div class="party" id="party"></div>
         <section class="skill-panel" aria-label="盘面技能">
-          <div class="energy-head"><span>盘面技能</span><strong>各技能独立 CD：10 回合</strong></div>
+          <div class="energy-head"><span>盘面技能</span><strong>初始冷却各不相同</strong></div>
           <div class="skill-buttons" id="boardSkills">
-            <button class="skill-btn" data-skill="shuffle"><span class="skill-mark">↻</span><span class="skill-name">重整棋盘</span><span class="skill-state" id="cd-shuffle">可用</span></button>
-            <button class="skill-btn" data-skill="raise"><span class="skill-mark">↑</span><span class="skill-name">随机升阶</span><span class="skill-state" id="cd-raise">可用</span></button>
-            <button class="skill-btn" data-skill="reinforce"><span class="skill-mark">＋</span><span class="skill-name">强化补块</span><span class="skill-state" id="cd-reinforce">可用</span></button>
+            <button class="skill-btn" data-skill="front"><span class="skill-mark">⚔</span><span class="skill-name">近战块概率提升</span><span class="skill-state" id="cd-front">初始 CD 5</span></button>
+            <button class="skill-btn" data-skill="raise"><span class="skill-mark">↑</span><span class="skill-name">随机升阶</span><span class="skill-state" id="cd-raise">初始 CD 8</span></button>
+            <button class="skill-btn" data-skill="reinforce"><span class="skill-mark">Ⅱ</span><span class="skill-name">后10块为二阶</span><span class="skill-state" id="cd-reinforce">初始 CD 7</span></button>
           </div>
-          <p class="skill-desc">盘面技能各自独立冷却；使用后需经过 10 次有效交换才能再次使用，不消耗全局技能槽。</p>
+          <div class="skill-description-list">
+            <div><strong>近战块概率提升</strong><span>后续 10 个补块中，A/B 的出现权重各提高到 2，C/D 权重为 1。初始冷却 5 回合。</span></div>
+            <div><strong>随机升阶</strong><span>随机抽取最多 3 个不同棋子，各升高 1 阶；不优先选择高阶棋子。初始冷却 8 回合。</span></div>
+            <div><strong>后10块为二阶</strong><span>接下来 10 个补充棋子固定为绿色二阶。初始冷却 7 回合。</span></div>
+          </div>
+          <p class="skill-desc">每次使用后，该技能再冷却 10 次交换；三个技能各自计时，不消耗主将技能槽。</p>
         </section>
-        <p class="hint">大头像代表主将；小头像为已上阵士兵。消除带状态的棋子时，发动该角色对应效果，并在主将头顶显示图标。</p>
+        <p class="hint">相同角色、相同阶级的棋子横向或纵向连成 3 个以上即可消除并合成高一阶棋子。四连触发技能Ⅰ，直线五连/六连触发技能Ⅱ，横纵交叉触发技能Ⅲ；每组只取最高级效果。技能在对应士兵上阵时发动。护盾与攻击加成会持续显示在主将头像上。</p>
       </aside>
       <div class="board-wrap">
         <div class="preview-panel" aria-label="预备补充预览"><div class="preview-head"><span>预备补充（不可操作）</span><strong>从上往下进入</strong></div><div id="refillPreview" class="preview-row"></div></div>
@@ -88,16 +103,20 @@ h1{font-size:clamp(22px,3vw,32px);margin:0 0 8px}.sub{color:var(--muted);margin:
   const tierColors=['#e7edf6','#39b66b','#3288e8','#a65ce5','#f59e0b'];
   const tierEnergy=[0,1,2,3,4];
   const stateLabels={s1:'Ⅰ',s2:'Ⅱ',s3:'Ⅲ'};
+  // 各主将的技能名称不同；当前原型的同序号技能先共用一套基础数值。
   const roleEffects=[
-    [{icon:'⚔',name:'斩击'},{icon:'✦',name:'破阵'},{icon:'✹',name:'连环斩'}],
-    [{icon:'◈',name:'护盾'},{icon:'▣',name:'坚守'},{icon:'✚',name:'援护'}],
-    [{icon:'➶',name:'追猎'},{icon:'➤',name:'穿透'},{icon:'✸',name:'狙击'}],
-    [{icon:'✚',name:'治疗'},{icon:'✧',name:'净化'},{icon:'❖',name:'复苏'}]
+    [{icon:'🛡',name:'坚壁'},{icon:'✦',name:'破阵打击'},{icon:'⚔',name:'战意号令'}],
+    [{icon:'◈',name:'守护屏障'},{icon:'▣',name:'反击指令'},{icon:'✚',name:'铁壁战意'}],
+    [{icon:'⬡',name:'护盾协议'},{icon:'➤',name:'精准射击'},{icon:'✸',name:'狙击姿态'}],
+    [{icon:'✚',name:'祝福屏障'},{icon:'❖',name:'惩戒'},{icon:'✧',name:'鼓舞'}]
   ];
+  const SKILL_VALUES={shieldPerStack:10,enemyDamage:5,attackPercentPerStack:1,maxStacks:10};
   const $=id=>document.getElementById(id);
   let board=[],party=[[],[],[],[]],busy=false,selected=null,dragFrom=null,swapAnim=new Set(),matchAnim=new Set(),refillAnim=new Set(),popAnim=new Set(),refillDelay=new Map(),touchDrag=null,suppressClick=false;
-  let turnCount=0,commanderEnergy=[0,0,0,0],activeCommanderEffects=[[],[],[],[]],tier2Refills=0,frontBoostRefills=0,refillQueue=[];
-  const BOARD_SKILLS={shuffle:0,raise:0,reinforce:0};
+  let turnCount=0,commanderEnergy=[0,0,0,0],activeCommanderEffects=[[],[],[],[]],commanderBattleStats=Array.from({length:N},()=>({shieldStacks:0,attackStacks:0})),enemyUnits=[],tier2Refills=0,frontBoostRefills=0,refillQueue=[];
+  const BOARD_SKILL_INITIAL_CD={front:5,raise:8,reinforce:7};
+  const BOARD_SKILL_REPEAT_CD=10;
+  const BOARD_SKILLS={front:5,raise:8,reinforce:7};
   const PREVIEW_COUNT=6;
   const wait=ms=>new Promise(resolve=>setTimeout(resolve,ms));
   const rand=n=>Math.floor(Math.random()*n);
@@ -108,12 +127,13 @@ h1{font-size:clamp(22px,3vw,32px);margin:0 0 8px}.sub{color:var(--muted);margin:
   const copyTile=t=>({...t,buffs:[...(t.buffs||[])]});
   function image(src,alt){const im=document.createElement('img');im.src=src;im.alt=alt;im.onerror=()=>im.remove();return im}
   function initialBoard(){
-    // Rejection sampling prevents starting horizontal/vertical triples.
+    // 匹配条件为角色和阶级，因此开局必须混合角色/阶级，不能把全部棋子都设为同一组合。
+    // 拒绝采样确保每次放入的新棋子不会立即组成横/纵三连。
     board=[];
     for(let i=0;i<SIZE*SIZE;i++){
       let t,tries=0;
       do{
-        t=makeTile(rand(N),1);tries++;
+        t=makeTile(rand(N),1+rand(5));tries++;
       }while(tries<100 && createsTriple(i,t));
       board.push(t);
     }
@@ -122,17 +142,17 @@ h1{font-size:clamp(22px,3vw,32px);margin:0 0 8px}.sub{color:var(--muted);margin:
   function uniqueBuffs(list){return [...new Set((list||[]).filter(k=>buffLabels[k]))].slice(0,1)}
   function buffBadges(buffs,cls='buffs'){
     const root=document.createElement('span');root.className=cls;
-    uniqueBuffs(buffs).forEach(key=>{const badge=document.createElement('span');badge.className='buff-icon';badge.textContent=buffLabels[key];badge.title=({s1:'四连状态',s2:'直线五连及以上状态',s3:'横纵交叉状态',def:'防御状态',hp:'生命状态',atk:'攻击状态'})[key];root.appendChild(badge)});
+    uniqueBuffs(buffs).forEach(key=>{const badge=document.createElement('span');badge.className='buff-icon';badge.textContent=buffLabels[key];badge.title=({s1:'四连：上阵时触发技能Ⅰ',s2:'直线五连/六连：上阵时触发技能Ⅱ',s3:'横纵交叉：上阵时触发技能Ⅲ',def:'防御状态',hp:'生命状态',atk:'攻击状态'})[key];root.appendChild(badge)});
     return root;
   }
   function makeRefillPreviewTile(offset=0){
     let chara;
     if(frontBoostRefills>offset){
-      // 丙生效期间：A/B 权重各为 2，C/D 各为 1。
+      // 技能生效期间：A/B 权重各为 2，C/D 各为 1。
       const roll=Math.random()*6;
       chara=roll<2?0:roll<4?1:roll<5?2:3;
     }else chara=rand(N);
-    const tier=tier2Refills>offset?2:1;
+    const tier=tier2Refills>offset?2:1+rand(5);
     return makeTile(chara,tier);
   }
   function ensureRefillQueue(){
@@ -169,62 +189,102 @@ h1{font-size:clamp(22px,3vw,32px);margin:0 0 8px}.sub{color:var(--muted);margin:
       if(label)label.textContent=left>0?`CD ${left}`:'可用';
     }
   }
-  function awardMixedTierEnergy(groups,chain){
-    const gained=[0,0,0,0];
+  function awardClearEnergy(groups){
+    // 每个被消除棋子按自身阶级给所属主将充能；N阶= N 点，交叉格只计一次。
+    const requested=[0,0,0,0];
+    const counted=new Set();
     for(const group of groups){
-      const tiles=[...group.cells].map(i=>board[i]).filter(Boolean);
-      if(!tiles.length)continue;
-      const tiers=tiles.map(t=>t.tier);
-      if(tiers.every(t=>t===tiers[0]))continue;
-      const maxTier=Math.max(...tiers);
-      const highestCount=tiers.filter(t=>t===maxTier).length;
-      const tierValue=tierEnergy[maxTier-1]||0;
-      const amount=Math.max(0,highestCount-1+chain)*tierValue;
-      // 每组匹配的棋子归属同一角色；只给该角色的主将充能。
-      const chara=tiles[0].chara;
-      gained[chara]+=amount;
+      for(const index of group.cells){
+        if(counted.has(index))continue;
+        counted.add(index);
+        const tile=board[index];
+        if(tile)requested[tile.chara]+=tile.tier;
+      }
     }
-    for(let i=0;i<N;i++)commanderEnergy[i]=Math.min(100,commanderEnergy[i]+gained[i]);
+    const applied=[0,0,0,0];
+    for(let i=0;i<N;i++){
+      const before=commanderEnergy[i];
+      commanderEnergy[i]=Math.min(100,before+requested[i]);
+      applied[i]=commanderEnergy[i]-before;
+    }
     updateSkillUI();
-    return gained.reduce((a,b)=>a+b,0);
+    return {byCommander:applied,total:applied.reduce((a,b)=>a+b,0)};
+  }
+  function energySummary(gained){
+    const items=gained.map((amount,i)=>amount>0?`${names[i]}主将 +${amount}`:null).filter(Boolean);
+    return items.length?items.join('、'):'无（相关技能槽已满或本次无可计入点数）';
   }
   function useBoardSkill(key){
     if(busy||!Object.prototype.hasOwnProperty.call(BOARD_SKILLS,key)||BOARD_SKILLS[key]>turnCount)return;
-    if(key==='shuffle'){
-      // 洗牌时尽量避免开局即自动消除。
-      const old=board.map(copyTile);let tries=0;
-      do{board=old.map(copyTile).sort(()=>Math.random()-.5);tries++}while(tries<80&&(findLines().h.length||findLines().v.length));
-      $('log').textContent='盘面技能：重整棋盘。';
+    if(key==='front'){
+      // 后续 10 个补块中，A/B 权重各为 2，C/D 权重各为 1。
+      frontBoostRefills=10;refillQueue=[];ensureRefillQueue();
+      $('log').textContent='盘面技能：近战块概率提升，接下来 10 个补块提高 A/B 的出现权重。';
     }else if(key==='raise'){
       const candidates=board.map((t,i)=>({t,i})).filter(x=>x.t.tier<5);
       if(!candidates.length){$('log').textContent='盘面技能：没有可升阶的棋子。';return}
       for(let n=0;n<3&&candidates.length;n++){
+        // 随机抽取且不重复，不按阶级排序或优先高阶棋子。
         const pick=candidates.splice(rand(candidates.length),1)[0];pick.t.tier=Math.min(5,pick.t.tier+1);pick.t.level=0;
       }
-      $('log').textContent='盘面技能：随机将最多 3 个棋子升高一阶。';
+      $('log').textContent='盘面技能：随机将最多 3 个不同棋子升高一阶。';
     }else if(key==='reinforce'){
-      tier2Refills=Math.max(tier2Refills,3);refillQueue=[];ensureRefillQueue();
-      $('log').textContent='盘面技能：接下来 3 个补块至少为绿色二阶。';
+      tier2Refills=10;refillQueue=[];ensureRefillQueue();
+      $('log').textContent='盘面技能：接下来 10 个补充棋子固定为绿色二阶。';
     }
-    BOARD_SKILLS[key]=turnCount+10;render();
+    BOARD_SKILLS[key]=turnCount+BOARD_SKILL_REPEAT_CD;render();
   }
-  function triggerSpecialState(tile){
-    const state=uniqueBuffs(tile?.buffs||[])[0];
+  function showSkillFloatingText(chara,message,state){
+    const portrait=$('party').querySelector(`[data-commander="${chara}"] .commander-portrait`);
+    const el=document.createElement('div');el.className=`skill-floating ${state||''}`;el.textContent=message;
+    if(portrait){const rect=portrait.getBoundingClientRect();el.style.left=`${rect.left+rect.width/2}px`;el.style.top=`${Math.max(6,rect.top-5)}px`}
+    else{el.style.left='50%';el.style.top='35%'}
+    document.body.appendChild(el);setTimeout(()=>el.remove(),1600);
+  }
+  function damageRandomEnemy(damage){
+    const alive=enemyUnits.filter(unit=>unit&&Number(unit.hp)>0);
+    if(!alive.length)return null;
+    const target=alive[rand(alive.length)];
+    target.hp=Math.max(0,Number(target.hp)-damage);
+    return {target,remaining:target.hp};
+  }
+  function triggerDeployedSkill(entry){
+    const state=entry.skillState;
     if(!state)return null;
+    const chara=entry.tile.chara;
     const level=({s1:0,s2:1,s3:2})[state];
     if(level===undefined)return null;
-    const effect=roleEffects[tile.chara][level];
+    const effect=roleEffects[chara][level];
+    const stats=commanderBattleStats[chara];
+    let message='';
+    if(state==='s1'){
+      if(stats.shieldStacks<SKILL_VALUES.maxStacks){
+        stats.shieldStacks++;
+        message=`${names[chara]}主将发动${effect.name}：护盾 +${SKILL_VALUES.shieldPerStack}（${stats.shieldStacks}/${SKILL_VALUES.maxStacks}层）`;
+      }else message=`${names[chara]}主将发动${effect.name}：护盾已达上限`;
+    }else if(state==='s2'){
+      const result=damageRandomEnemy(SKILL_VALUES.enemyDamage);
+      message=result
+        ? `${names[chara]}主将发动${effect.name}：敌方部队受到 ${SKILL_VALUES.enemyDamage} 点伤害，剩余 ${result.remaining} HP`
+        : `${names[chara]}主将发动${effect.name}：造成 ${SKILL_VALUES.enemyDamage} 点伤害（当前三消阶段没有敌方部队）`;
+    }else if(state==='s3'){
+      if(stats.attackStacks<SKILL_VALUES.maxStacks){
+        stats.attackStacks++;
+        message=`${names[chara]}主将发动${effect.name}：攻击力 +${SKILL_VALUES.attackPercentPerStack}%（${stats.attackStacks}/${SKILL_VALUES.maxStacks}层）`;
+      }else message=`${names[chara]}主将发动${effect.name}：攻击加成已达上限`;
+    }
     const item={...effect,state,until:Date.now()+1800};
-    activeCommanderEffects[tile.chara].push(item);
-    activeCommanderEffects[tile.chara]=activeCommanderEffects[tile.chara].filter(x=>x.until>Date.now()).slice(-3);
+    activeCommanderEffects[chara].push(item);
+    activeCommanderEffects[chara]=activeCommanderEffects[chara].filter(x=>x.until>Date.now()).slice(-3);
     renderParty();
-    setTimeout(()=>{activeCommanderEffects[tile.chara]=activeCommanderEffects[tile.chara].filter(x=>x.until>Date.now());renderParty()},1850);
-    return `${names[tile.chara]}主将发动${effect.name}`;
+    showSkillFloatingText(chara,message,state);
+    setTimeout(()=>{activeCommanderEffects[chara]=activeCommanderEffects[chara].filter(x=>x.until>Date.now());renderParty()},1850);
+    return message;
   }
   function createsTriple(i,t){
     const {r,c}=pos(i);
-    return (c>=2&&board[idx(r,c-1)]?.chara===t.chara&&board[idx(r,c-2)]?.chara===t.chara)
-      ||(r>=2&&board[idx(r-1,c)]?.chara===t.chara&&board[idx(r-2,c)]?.chara===t.chara);
+    return (c>=2&&board[idx(r,c-1)]?.tier===t.tier&&board[idx(r,c-1)]?.chara===t.chara&&board[idx(r,c-2)]?.tier===t.tier&&board[idx(r,c-2)]?.chara===t.chara)
+      ||(r>=2&&board[idx(r-1,c)]?.tier===t.tier&&board[idx(r-1,c)]?.chara===t.chara&&board[idx(r-2,c)]?.tier===t.tier&&board[idx(r-2,c)]?.chara===t.chara);
   }
   function render(){
     const root=$('board');root.innerHTML='';
@@ -281,11 +341,18 @@ h1{font-size:clamp(22px,3vw,32px);margin:0 0 8px}.sub{color:var(--muted);margin:
   function renderParty(){
     const root=$('party');root.innerHTML='';root.className='commander-list';
     for(let chara=0;chara<N;chara++){
-      const card=document.createElement('div');card.className='commander-card';
+      const card=document.createElement('div');card.className='commander-card';card.dataset.commander=String(chara);
       const portrait=document.createElement('div');portrait.className='commander-portrait';portrait.style.borderColor=['#c5d0e0','#39b66b','#3288e8','#a65ce5'][chara];
       const im=image(charaFiles[chara],`主将${names[chara]}`);im.onerror=()=>{im.remove();const f=document.createElement('span');f.className='fallback';f.textContent=names[chara];portrait.appendChild(f)};portrait.appendChild(im);
       const effects=activeCommanderEffects[chara].filter(x=>x.until>Date.now());
-      if(effects.length){const badgeRow=document.createElement('div');badgeRow.className='commander-effects';effects.forEach(e=>{const badge=document.createElement('span');badge.className='commander-effect';badge.textContent=e.icon;badge.title=`${e.name}（状态${stateLabels[e.state]}）`;badgeRow.appendChild(badge)});portrait.appendChild(badgeRow)}
+      const battle=commanderBattleStats[chara];
+      if(effects.length||battle.shieldStacks>0||battle.attackStacks>0){
+        const badgeRow=document.createElement('div');badgeRow.className='commander-effects';
+        if(battle.shieldStacks>0){const badge=document.createElement('span');badge.className='commander-effect';badge.textContent=`🛡${battle.shieldStacks}`;badge.title=`护盾：${battle.shieldStacks*SKILL_VALUES.shieldPerStack} 点（${battle.shieldStacks}/${SKILL_VALUES.maxStacks}层）`;badgeRow.appendChild(badge)}
+        if(battle.attackStacks>0){const badge=document.createElement('span');badge.className='commander-effect';badge.textContent=`⚔+${battle.attackStacks}%`;badge.title=`攻击力加成：+${battle.attackStacks*SKILL_VALUES.attackPercentPerStack}%（${battle.attackStacks}/${SKILL_VALUES.maxStacks}层）`;badgeRow.appendChild(badge)}
+        effects.forEach(e=>{const badge=document.createElement('span');badge.className='commander-effect';badge.textContent=e.icon;badge.title=`${e.name}（技能${stateLabels[e.state]}）`;badgeRow.appendChild(badge)});
+        portrait.appendChild(badgeRow)
+      }
       const content=document.createElement('div');content.style.minWidth='0';
       const name=document.createElement('div');name.className='commander-name';name.textContent=`主将 ${names[chara]} · ${party[chara].length} 名士兵`;content.appendChild(name);
       const meter=document.createElement('div');meter.style.cssText='margin:0 0 6px';
@@ -303,8 +370,8 @@ h1{font-size:clamp(22px,3vw,32px);margin:0 0 8px}.sub{color:var(--muted);margin:
   }
   function findLines(){
     const h=[],v=[];
-    for(let r=0;r<SIZE;r++){let c=0;while(c<SIZE){let e=c+1;while(e<SIZE&&board[idx(r,e)].chara===board[idx(r,c)].chara)e++;if(e-c>=3)h.push({type:'h',cells:Array.from({length:e-c},(_,k)=>idx(r,c+k))});c=e}}
-    for(let c=0;c<SIZE;c++){let r=0;while(r<SIZE){let e=r+1;while(e<SIZE&&board[idx(e,c)].chara===board[idx(r,c)].chara)e++;if(e-r>=3)v.push({type:'v',cells:Array.from({length:e-r},(_,k)=>idx(r+k,c))});r=e}}
+    for(let r=0;r<SIZE;r++){let c=0;while(c<SIZE){let e=c+1;while(e<SIZE&&board[idx(r,e)].tier===board[idx(r,c)].tier&&board[idx(r,e)].chara===board[idx(r,c)].chara)e++;if(e-c>=3)h.push({type:'h',cells:Array.from({length:e-c},(_,k)=>idx(r,c+k))});c=e}}
+    for(let c=0;c<SIZE;c++){let r=0;while(r<SIZE){let e=r+1;while(e<SIZE&&board[idx(e,c)].tier===board[idx(r,c)].tier&&board[idx(e,c)].chara===board[idx(r,c)].chara)e++;if(e-r>=3)v.push({type:'v',cells:Array.from({length:e-r},(_,k)=>idx(r+k,c))});r=e}}
     return {h,v};
   }
   function groupsFromLines(lines){
@@ -330,50 +397,40 @@ h1{font-size:clamp(22px,3vw,32px);margin:0 0 8px}.sub{color:var(--muted);margin:
   function mergedTile(group){
     const tiles=[...group.cells].map(i=>board[i]).filter(Boolean);
     if(!tiles.length)return null;
-    const tiers=tiles.map(t=>t.tier),max=Math.max(...tiers),same=tiers.every(x=>x===tiers[0]);
-    // 橙色是最高阶：同阶消除仍生成橙色棋子，不会因触顶而消失。
-    let tier,level;
-    if(same){
-      tier=Math.min(5,max+1);
-      level=Math.min(5,tiles.reduce((sum,t)=>sum+(t.level||0),0));
-    }else{
-      // 混阶不升阶；产物阶级等于被消除棋子的最高阶（橙色仍为橙色）。
-      const topTiles=tiles.filter(t=>t.tier===max);
-      tier=max;
-      level=Math.min(5,topTiles.reduce((sum,t)=>sum+(t.level||0),0)+Math.max(0,topTiles.length-1));
-    }
-    const representative=tiles.filter(t=>t.tier===max).sort((a,b)=>(b.level||0)-(a.level||0))[0];
-    const state=stateGradeForGroup(group);
-    return {chara:representative.chara,tier,level,buffs:state?[state]:[]};
+    const tier=tiles[0].tier;
+    // 橙色是最高阶：橙色棋子匹配后全部消除并上阵，不再生成不存在的更高阶棋子。
+    if(tier>=5)return null;
+    // 只有同角色、同阶级的匹配会到达这里，合成产物保留该角色并严格高一阶。
+    const level=Math.min(5,tiles.reduce((sum,t)=>sum+(t.level||0),0));
+    const representative=tiles.slice().sort((a,b)=>(b.level||0)-(a.level||0))[0];
+    return {chara:representative.chara,tier:tier+1,level,buffs:[]};
   }
   function collectPartyForGroup(group){
-    const entries=[...group.cells].map(index=>({tile:board[index],index})).filter(x=>x.tile);
+    const entries=[...group.cells].map(index=>({tile:board[index],sourceIndex:index})).filter(x=>x.tile);
     if(!entries.length)return [];
-    const redEntries=entries.filter(x=>x.tile.tier===5);
-    if(redEntries.length){
-      // 橙色参与消除时，所有被消除的橙色棋子都上阵，各自保留自身等级与 Buff。
-      return redEntries.map(x=>({tile:copyTile(x.tile),sourceIndex:x.index}));
+    const skillState=stateGradeForGroup(group);
+    const tier=entries[0].tile.tier;
+    if(tier===5){
+      // 最高阶组不再合成；该组所有橙色士兵上阵，但整组技能只发动一次。
+      return entries.map((entry,i)=>({...entry,skillState:i===0?skillState:null}));
     }
-    // 普通合成只上阵一名：先比较阶级，再等级，再 Buff 数；完全并列时随机选择。
-    const maxTier=Math.max(...entries.map(x=>x.tile.tier));
-    let candidates=entries.filter(x=>x.tile.tier===maxTier);
-    const maxLevel=Math.max(...candidates.map(x=>x.tile.level||0));
-    candidates=candidates.filter(x=>(x.tile.level||0)===maxLevel);
-    const maxBuffs=Math.max(...candidates.map(x=>uniqueBuffs(x.tile.buffs).length));
-    candidates=candidates.filter(x=>uniqueBuffs(x.tile.buffs).length===maxBuffs);
+    // 普通组上阵一名士兵：优先较高等级；完全并列时随机选取。
+    const maxLevel=Math.max(...entries.map(x=>x.tile.level||0));
+    const candidates=entries.filter(x=>(x.tile.level||0)===maxLevel);
     const best=candidates[rand(candidates.length)];
-    return [{tile:copyTile(best.tile),sourceIndex:best.index}];
+    return [{...best,skillState}];
   }
   async function flyToParty(entry){
     const source=$('board').querySelector(`[data-index="${entry.sourceIndex}"]`);
     const target=$('party');
-    if(!source||!target){party[entry.tile.chara].push(copyTile(entry.tile));renderParty();return}
+    if(!source||!target){party[entry.tile.chara].push(copyTile(entry.tile));renderParty();return triggerDeployedSkill(entry)}
     const a=source.getBoundingClientRect(),b=target.getBoundingClientRect();
     const flyer=document.createElement('div');flyer.className='flyer';flyer.style.left=`${a.left}px`;flyer.style.top=`${a.top}px`;flyer.style.width=`${a.width}px`;flyer.style.height=`${a.height}px`;flyer.style.background=tierColors[entry.tile.tier-1];
     const im=image(charaFiles[entry.tile.chara],names[entry.tile.chara]);flyer.appendChild(im);document.body.appendChild(flyer);
     const dx=(b.left+b.width/2)-(a.left+a.width/2),dy=(b.top+b.height/2)-(a.top+a.height/2);
     flyer.animate([{transform:'translate(0,0) scale(1)',opacity:1},{transform:`translate(${dx}px,${dy}px) scale(.35)`,opacity:.25}],{duration:680,easing:'cubic-bezier(.2,.75,.25,1)'});
     await wait(680);flyer.remove();party[entry.tile.chara].push(copyTile(entry.tile));renderParty();
+    return triggerDeployedSkill(entry);
   }
   async function animateConvergence(groups,created){
     const root=$('board');
@@ -420,12 +477,8 @@ h1{font-size:clamp(22px,3vw,32px);margin:0 0 8px}.sub{color:var(--muted);margin:
         g.cells.forEach(i=>removals.add(i));
         return collectPartyForGroup(g);
       });
-      const gained=awardMixedTierEnergy(groups,chain);
-      totalGained+=gained;
-      const stateMessages=[];
-      const consumedStateSources=new Set();
-      for(const i of removals){const msg=triggerSpecialState(board[i]);if(msg){stateMessages.push(msg);consumedStateSources.add(i)}}
-      partyEntries.forEach(entry=>{if(consumedStateSources.has(entry.sourceIndex))entry.tile.buffs=[]});
+      const energyAward=awardClearEnergy(groups);
+      totalGained+=energyAward.total;
       // 每组只生成一个产物；直接交换触发的组优先在对应交换格生成，补块触发则落在该组最左下格。
       const outputs=groups.map(g=>({group:g,tile:mergedTile(g)})).filter(item=>item.tile!==null);
       outputs.forEach(item=>{
@@ -438,11 +491,11 @@ h1{font-size:clamp(22px,3vw,32px);margin:0 0 8px}.sub{color:var(--muted);margin:
         }else item.place=chooseAutoPosition(item.group);
       });
       matchAnim=new Set(removals);swapAnim.clear();refillAnim.clear();popAnim.clear();refillDelay.clear();render();
-      $('log').textContent=`第 ${chain} 连：消除 ${removals.size} 个棋子，技能槽 +${gained}${stateMessages.length?'；'+stateMessages.join('、'):''}；正在合成……`;
+      $('log').textContent=`第 ${chain} 连：消除 ${removals.size} 个棋子；技能槽获得 ${energySummary(energyAward.byCommander)}；正在合成……`;
       await wait(320);
       await animateConvergence(groups,outputs);
       matchAnim.clear();render();
-      await Promise.all(partyEntries.map(entry=>flyToParty(entry)));
+      const deploySkillMessages=(await Promise.all(partyEntries.map(entry=>flyToParty(entry)))).filter(Boolean);
       const nextBoard=new Array(SIZE*SIZE);
       const newRefillAnim=new Set(),newPopAnim=new Set(),newRefillDelay=new Map();
       for(let c=0;c<SIZE;c++){
@@ -450,17 +503,29 @@ h1{font-size:clamp(22px,3vw,32px);margin:0 0 8px}.sub{color:var(--muted);margin:
         for(let r=0;r<SIZE;r++){const oldIndex=idx(r,c);if(!removals.has(oldIndex))survivors.push({tile:board[oldIndex],from:r,kind:'survivor'})}
         const colCreated=outputs.filter(item=>pos(item.place).c===c).sort((a,b)=>pos(a.place).r-pos(b.place).r);
         const slots=new Array(SIZE).fill(null);
-        colCreated.forEach(item=>{const row=pos(item.place).r;if(!slots[row])slots[row]={tile:copyTile(item.tile),kind:'created',group:item.group};else item.place=chooseAutoPosition(item.group)});
-        // 将存活棋子从底部向上填入空位，保持存活棋子的相对顺序；合成产物锁定在指定落点。
-        let si=survivors.length-1;
-        for(let r=SIZE-1;r>=0&&si>=0;r--){if(!slots[r])slots[r]=survivors[si--]}
-        // 剩余空位由顶部补块队列填充，不移动已经锁定的合成产物。
-        const emptyRows=[];for(let r=0;r<SIZE;r++)if(!slots[r])emptyRows.push(r);
-        emptyRows.forEach(r=>slots[r]={tile:takeRefillTile(),kind:'refill',from:-1});
+        const anchorRows=[];
+        colCreated.forEach(item=>{
+          const row=pos(item.place).r;
+          if(!slots[row]){slots[row]={tile:copyTile(item.tile),kind:'created',group:item.group};anchorRows.push(row)}
+        });
+        // 合成块是固定落点的障碍：原本在它上方的存活棋子不能穿过它掉到下方。
+        // 按合成块所在行把每列分成若干段，每段只让本段原有棋子向下沉降，段内空位再由补块填充。
+        anchorRows.sort((a,b)=>a-b);
+        const segments=[];let segmentStart=0;
+        for(const anchorRow of anchorRows){segments.push([segmentStart,anchorRow-1]);segmentStart=anchorRow+1;}
+        segments.push([segmentStart,SIZE-1]);
+        for(const [startRow,endRow] of segments){
+          if(startRow>endRow)continue;
+          const segmentSurvivors=survivors.filter(item=>item.from>=startRow&&item.from<=endRow);
+          let si=segmentSurvivors.length-1;
+          for(let r=endRow;r>=startRow;r--){if(!slots[r]&&si>=0)slots[r]=segmentSurvivors[si--];}
+          // 每个被合成块隔开的区段独立补满，避免补块/存活块跨过合成块。
+          for(let r=startRow;r<=endRow;r++)if(!slots[r])slots[r]={tile:takeRefillTile(),kind:'refill',from:-1};
+        }
         slots.forEach((item,r)=>{const newIndex=idx(r,c);nextBoard[newIndex]=item.tile;if(item.kind==='created')newPopAnim.add(newIndex);if(item.kind==='refill'||(item.kind==='survivor'&&item.from!==r)){newRefillAnim.add(newIndex);newRefillDelay.set(newIndex,r*65+c*24)}});
       }
       board=nextBoard;refillAnim=newRefillAnim;popAnim=newPopAnim;refillDelay=newRefillDelay;selected=null;render();
-      $('log').textContent=`消除 ${removals.size} 个棋子，生成 ${outputs.length} 个合成棋子。${stateMessages.join('；')}`;
+      $('log').textContent=`消除 ${removals.size} 个棋子，生成 ${outputs.length} 个合成棋子；技能槽获得 ${energySummary(energyAward.byCommander)}${deploySkillMessages.length?'；'+deploySkillMessages.join('；'):''}`;
       await wait(650);refillAnim.clear();popAnim.clear();refillDelay.clear();render();
       $('log').textContent=`本轮累计技能槽 +${totalGained}；第 ${chain} 连结算完成。`;
       playerMove=false;
@@ -477,7 +542,7 @@ h1{font-size:clamp(22px,3vw,32px);margin:0 0 8px}.sub{color:var(--muted);margin:
     if(busy||!Number.isInteger(a)||!Number.isInteger(b)||a===b)return;
     const ta=board[a],tb=board[b];
     if(ta&&tb&&ta.chara===tb.chara&&ta.tier===tb.tier&&(ta.level||0)===(tb.level||0)&&stateSignature(ta)===stateSignature(tb)){ 
-      selected=null;render();$('log').textContent='你交换了两个阶级与状态完全相同的棋子，不扣步数。';return;
+      selected=null;render();$('log').textContent='你交换了两个角色、阶级与状态完全相同的棋子，不扣步数。';return;
     }
     busy=true;selected=null;turnCount++;
     [board[a],board[b]]=[board[b],board[a]];
@@ -490,10 +555,10 @@ h1{font-size:clamp(22px,3vw,32px);margin:0 0 8px}.sub{color:var(--muted);margin:
   }
   function tickCooldownsSafe(){updateSkillUI()}
   function start(){
-    turnCount=0;commanderEnergy=[0,0,0,0];for(const k of Object.keys(BOARD_SKILLS))BOARD_SKILLS[k]=0;activeCommanderEffects=[[],[],[],[]];tier2Refills=0;frontBoostRefills=0;refillQueue=[];
+    turnCount=0;commanderEnergy=[0,0,0,0];for(const k of Object.keys(BOARD_SKILLS))BOARD_SKILLS[k]=BOARD_SKILL_INITIAL_CD[k];activeCommanderEffects=[[],[],[],[]];commanderBattleStats=Array.from({length:N},()=>({shieldStacks:0,attackStacks:0}));enemyUnits=[];tier2Refills=0;frontBoostRefills=0;refillQueue=[];
     party=[[],[],[],[]];selected=null;busy=false;swapAnim.clear();matchAnim.clear();refillAnim.clear();popAnim.clear();refillDelay.clear();
     let tries=0;do{initialBoard();tries++}while((findLines().h.length||findLines().v.length)&&tries<100);
-    $('setup').style.display='none';$('game').style.display='block';$('log').textContent='游戏开始！拖动或依次点击两个棋子交换。对应角色消除混阶棋子时，该主将单独充能；盘面技能各自冷却 10 回合。';render();
+    $('setup').style.display='none';$('game').style.display='block';$('log').textContent='游戏开始！相同角色、相同阶级的棋子横/纵连成3个以上即可消除并升阶；四连技能Ⅰ、直线五连以上技能Ⅱ、横纵交叉技能Ⅲ，上阵时触发。每个被消除棋子按阶级给所属主将充能。';render();
   }
   $('boardSkills').addEventListener('click',e=>{const btn=e.target.closest('[data-skill]');if(btn)useBoardSkill(btn.dataset.skill)});
   // iOS Safari：触摸棋盘或拖动头像时禁止页面跟随手指滚动。
