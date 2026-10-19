@@ -7,7 +7,7 @@
 <title>角色三消合成原型</title>
 <style>
 :root{--bg:#101522;--panel:#1b2335;--line:#303c54;--text:#eef3ff;--muted:#9caac4;--accent:#78d8bd}
-*{box-sizing:border-box}html{overscroll-behavior:none;touch-action:pan-x pan-y}body{margin:0;background:radial-gradient(circle at top,#202c43,#101522 55%);color:var(--text);font-family:system-ui,-apple-system,"Segoe UI",sans-serif;padding:22px;min-height:100vh;min-height:100dvh;padding: max(10px,env(safe-area-inset-top)) max(10px,env(safe-area-inset-right)) max(10px,env(safe-area-inset-bottom)) max(10px,env(safe-area-inset-left));overscroll-behavior:none}
+*{box-sizing:border-box}html{overscroll-behavior:none}body{margin:0;background:radial-gradient(circle at top,#202c43,#101522 55%);color:var(--text);font-family:system-ui,-apple-system,"Segoe UI",sans-serif;padding:22px;min-height:100vh;min-height:100dvh;padding: max(10px,env(safe-area-inset-top)) max(10px,env(safe-area-inset-right)) max(10px,env(safe-area-inset-bottom)) max(10px,env(safe-area-inset-left));overscroll-behavior:none}
 button,input{font:inherit}button{cursor:pointer;border:0;border-radius:10px;padding:10px 16px;background:var(--accent);color:#10221e;font-weight:800}button.secondary{background:#34415a;color:#eef3ff}
 .wrap{max-width:820px;margin:auto}.panel{background:rgba(27,35,53,.96);border:1px solid var(--line);border-radius:16px;padding:18px;box-shadow:0 16px 40px #0003}
 h1{font-size:clamp(22px,3vw,32px);margin:0 0 8px}.sub{color:var(--muted);margin:0 0 20px}.setup{max-width:520px;margin:8vh auto}.setup label{display:block;margin:16px 0 7px;color:#c8d4e9}.setup input{width:100%;padding:12px;border-radius:10px;border:1px solid #52617a;background:#111827;color:white;font-size:18px}.error{min-height:22px;color:#ff9d9d;font-size:14px;margin-top:6px}
@@ -58,10 +58,14 @@ h1{font-size:clamp(22px,3vw,32px);margin:0 0 8px}.sub{color:var(--muted);margin:
       <aside class="panel side">
         <h2>主将与士兵</h2>
         <div class="party" id="party"></div>
-        <section class="skill-panel" aria-label="主将技能槽">
-          <div class="energy-head"><span>主将技能槽</span><strong><span id="energyValue">0</span> / 100</strong></div>
-          <div class="energy-track"><div class="energy-fill" id="energyFill"></div></div>
-          <p class="skill-desc">仅混阶消除增加能量。白=0、绿=1、蓝=2、紫=3、橙=4。能量满后不再溢出。</p>
+        <section class="skill-panel" aria-label="盘面技能">
+          <div class="energy-head"><span>盘面技能</span><strong>各技能独立 CD：10 回合</strong></div>
+          <div class="skill-buttons" id="boardSkills">
+            <button class="skill-btn" data-skill="shuffle"><span class="skill-mark">↻</span><span class="skill-name">重整棋盘</span><span class="skill-state" id="cd-shuffle">可用</span></button>
+            <button class="skill-btn" data-skill="raise"><span class="skill-mark">↑</span><span class="skill-name">随机升阶</span><span class="skill-state" id="cd-raise">可用</span></button>
+            <button class="skill-btn" data-skill="reinforce"><span class="skill-mark">＋</span><span class="skill-name">强化补块</span><span class="skill-state" id="cd-reinforce">可用</span></button>
+          </div>
+          <p class="skill-desc">盘面技能各自独立冷却；使用后需经过 10 次有效交换才能再次使用，不消耗全局技能槽。</p>
         </section>
         <p class="hint">大头像代表主将；小头像为已上阵士兵。消除带状态的棋子时，发动该角色对应效果，并在主将头顶显示图标。</p>
       </aside>
@@ -92,7 +96,8 @@ h1{font-size:clamp(22px,3vw,32px);margin:0 0 8px}.sub{color:var(--muted);margin:
   ];
   const $=id=>document.getElementById(id);
   let board=[],party=[[],[],[],[]],busy=false,selected=null,dragFrom=null,swapAnim=new Set(),matchAnim=new Set(),refillAnim=new Set(),popAnim=new Set(),refillDelay=new Map(),touchDrag=null,suppressClick=false;
-  let turnCount=0,energy=0,activeCommanderEffects=[[],[],[],[]],tier2Refills=0,frontBoostRefills=0,refillQueue=[];
+  let turnCount=0,commanderEnergy=[0,0,0,0],activeCommanderEffects=[[],[],[],[]],tier2Refills=0,frontBoostRefills=0,refillQueue=[];
+  const BOARD_SKILLS={shuffle:0,raise:0,reinforce:0};
   const PREVIEW_COUNT=6;
   const wait=ms=>new Promise(resolve=>setTimeout(resolve,ms));
   const rand=n=>Math.floor(Math.random()*n);
@@ -151,12 +156,21 @@ h1{font-size:clamp(22px,3vw,32px);margin:0 0 8px}.sub{color:var(--muted);margin:
     });
   }
   function updateSkillUI(){
-    $('energyValue').textContent=energy;
-    $('energyFill').style.width=(energy/100*100)+'%';
-    $('energyFill').classList.toggle('ready',energy>=100);
+    for(let i=0;i<N;i++){
+      const value=$(`commanderEnergy${i}`),fill=$(`commanderEnergyFill${i}`);
+      if(value)value.textContent=commanderEnergy[i];
+      if(fill){fill.style.width=commanderEnergy[i]+'%';fill.classList.toggle('ready',commanderEnergy[i]>=100)}
+    }
+    for(const key of Object.keys(BOARD_SKILLS)){
+      const left=Math.max(0,BOARD_SKILLS[key]-turnCount);
+      const btn=$('boardSkills')?.querySelector(`[data-skill="${key}"]`);
+      const label=$(`cd-${key}`);
+      if(btn)btn.disabled=busy||left>0;
+      if(label)label.textContent=left>0?`CD ${left}`:'可用';
+    }
   }
   function awardMixedTierEnergy(groups,chain){
-    let gain=0;
+    const gained=[0,0,0,0];
     for(const group of groups){
       const tiles=[...group.cells].map(i=>board[i]).filter(Boolean);
       if(!tiles.length)continue;
@@ -165,12 +179,34 @@ h1{font-size:clamp(22px,3vw,32px);margin:0 0 8px}.sub{color:var(--muted);margin:
       const maxTier=Math.max(...tiers);
       const highestCount=tiers.filter(t=>t===maxTier).length;
       const tierValue=tierEnergy[maxTier-1]||0;
-      gain+=Math.max(0,highestCount-1+chain)*tierValue;
+      const amount=Math.max(0,highestCount-1+chain)*tierValue;
+      // 每组匹配的棋子归属同一角色；只给该角色的主将充能。
+      const chara=tiles[0].chara;
+      gained[chara]+=amount;
     }
-    const before=energy;
-    energy=Math.min(100,energy+gain);
+    for(let i=0;i<N;i++)commanderEnergy[i]=Math.min(100,commanderEnergy[i]+gained[i]);
     updateSkillUI();
-    return energy-before;
+    return gained.reduce((a,b)=>a+b,0);
+  }
+  function useBoardSkill(key){
+    if(busy||!Object.prototype.hasOwnProperty.call(BOARD_SKILLS,key)||BOARD_SKILLS[key]>turnCount)return;
+    if(key==='shuffle'){
+      // 洗牌时尽量避免开局即自动消除。
+      const old=board.map(copyTile);let tries=0;
+      do{board=old.map(copyTile).sort(()=>Math.random()-.5);tries++}while(tries<80&&(findLines().h.length||findLines().v.length));
+      $('log').textContent='盘面技能：重整棋盘。';
+    }else if(key==='raise'){
+      const candidates=board.map((t,i)=>({t,i})).filter(x=>x.t.tier<5);
+      if(!candidates.length){$('log').textContent='盘面技能：没有可升阶的棋子。';return}
+      for(let n=0;n<3&&candidates.length;n++){
+        const pick=candidates.splice(rand(candidates.length),1)[0];pick.t.tier=Math.min(5,pick.t.tier+1);pick.t.level=0;
+      }
+      $('log').textContent='盘面技能：随机将最多 3 个棋子升高一阶。';
+    }else if(key==='reinforce'){
+      tier2Refills=Math.max(tier2Refills,3);refillQueue=[];ensureRefillQueue();
+      $('log').textContent='盘面技能：接下来 3 个补块至少为绿色二阶。';
+    }
+    BOARD_SKILLS[key]=turnCount+10;render();
   }
   function triggerSpecialState(tile){
     const state=uniqueBuffs(tile?.buffs||[])[0];
@@ -205,7 +241,7 @@ h1{font-size:clamp(22px,3vw,32px);margin:0 0 8px}.sub{color:var(--muted);margin:
       im.onerror=()=>{im.remove();const f=document.createElement('span');f.className='fallback';f.textContent=names[t.chara];cell.appendChild(f)};
       if(t.buffs?.length)cell.appendChild(buffBadges(t.buffs));
       const tier=document.createElement('span');tier.className='tier';tier.textContent=`${t.tier===5?'橙':t.tier+'阶'}${t.level>0?' · '+t.level+'级':''}`;cell.appendChild(tier);
-      cell.draggable=true;
+      cell.draggable=!('ontouchstart' in window); // Native HTML drag is desktop-only; touch uses Pointer Events.
       cell.addEventListener('dragstart',e=>{if(busy){e.preventDefault();return}dragFrom=i;cell.classList.add('dragging');e.dataTransfer.setData('text/plain',String(i));e.dataTransfer.effectAllowed='move'});
       cell.addEventListener('dragend',()=>{cell.classList.remove('dragging');dragFrom=null});
       cell.addEventListener('dragover',e=>{e.preventDefault()});
@@ -213,26 +249,11 @@ h1{font-size:clamp(22px,3vw,32px);margin:0 0 8px}.sub{color:var(--muted);margin:
       // iOS Safari does not consistently support native HTML drag-and-drop on touch screens.
       cell.addEventListener('pointerdown',e=>{
         if(e.pointerType!=='touch'||busy)return;
-        e.preventDefault();
+        // Do not cancel pointerdown: iOS Safari may suppress the synthesized click,
+        // which is required for the two-tap swap fallback. Cancel only after a real drag starts.
         const rect=cell.getBoundingClientRect();
         touchDrag={from:i,startX:e.clientX,startY:e.clientY,moved:false,ghost:null,offsetX:e.clientX-rect.left,offsetY:e.clientY-rect.top};
-        cell.setPointerCapture?.(e.pointerId);
       });
-      cell.addEventListener('pointermove',e=>{
-        if(!touchDrag||touchDrag.from!==i)return;
-        e.preventDefault();
-        if(!touchDrag.moved&&Math.hypot(e.clientX-touchDrag.startX,e.clientY-touchDrag.startY)<7)return;
-        if(!touchDrag.moved){touchDrag.moved=true;const rect=cell.getBoundingClientRect();const ghost=cell.cloneNode(true);ghost.classList.remove('selected','swap-anim','match-anim','refill-anim');ghost.classList.add('flyer');ghost.style.position='fixed';ghost.style.left=rect.left+'px';ghost.style.top=rect.top+'px';ghost.style.width=rect.width+'px';ghost.style.height=rect.height+'px';ghost.style.opacity='.72';ghost.style.transform='scale(1.08)';document.body.appendChild(ghost);touchDrag.ghost=ghost;cell.style.opacity='.28'}
-        if(touchDrag.ghost){touchDrag.ghost.style.left=(e.clientX-touchDrag.offsetX)+'px';touchDrag.ghost.style.top=(e.clientY-touchDrag.offsetY)+'px'}
-        e.preventDefault();
-      });
-      cell.addEventListener('pointerup',e=>{
-        if(!touchDrag||touchDrag.from!==i)return;
-        const drag=touchDrag;touchDrag=null;
-        if(drag.ghost)drag.ghost.remove();cell.style.opacity='';
-        if(drag.moved){suppressClick=true;const target=document.elementFromPoint(e.clientX,e.clientY)?.closest('.tile');if(target){const to=Number(target.dataset.index);if(Number.isInteger(to)&&to!==drag.from)swapAction(drag.from,to)}setTimeout(()=>{suppressClick=false},80)}
-      });
-      cell.addEventListener('pointercancel',()=>{if(touchDrag&&touchDrag.from===i){touchDrag.ghost?.remove();touchDrag=null;cell.style.opacity=''}});
       // Click/tap two cells remains available as an alternative to dragging.
       cell.addEventListener('click',()=>{if(suppressClick||busy)return;if(selected===null){selected=i;render()}else if(selected===i){selected=null;render()}else{const from=selected;selected=null;swapAction(from,i)}});
       root.appendChild(cell);
@@ -252,6 +273,9 @@ h1{font-size:clamp(22px,3vw,32px);margin:0 0 8px}.sub{color:var(--muted);margin:
       if(effects.length){const badgeRow=document.createElement('div');badgeRow.className='commander-effects';effects.forEach(e=>{const badge=document.createElement('span');badge.className='commander-effect';badge.textContent=e.icon;badge.title=`${e.name}（状态${stateLabels[e.state]}）`;badgeRow.appendChild(badge)});portrait.appendChild(badgeRow)}
       const content=document.createElement('div');content.style.minWidth='0';
       const name=document.createElement('div');name.className='commander-name';name.textContent=`主将 ${names[chara]} · ${party[chara].length} 名士兵`;content.appendChild(name);
+      const meter=document.createElement('div');meter.style.cssText='margin:0 0 6px';
+      meter.innerHTML=`<div class="energy-head" style="margin-bottom:3px"><span>主将技能槽</span><strong style="font-size:11px"><span id="commanderEnergy${chara}">${commanderEnergy[chara]}</span>/100</strong></div><div class="energy-track"><div class="energy-fill ${commanderEnergy[chara]>=100?'ready':''}" id="commanderEnergyFill${chara}" style="width:${commanderEnergy[chara]}%"></div></div>`;
+      content.appendChild(meter);
       const soldiers=document.createElement('div');soldiers.className='commander-soldiers';
       if(!party[chara].length){const empty=document.createElement('span');empty.className='commander-empty';empty.textContent='暂无上阵士兵';soldiers.appendChild(empty)}
       party[chara].forEach(t=>{const unit=document.createElement('div');unit.className='commander-soldier';unit.style.borderColor=tierColors[t.tier-1];unit.title=`${names[chara]} · ${t.tier===5?'橙色':t.tier+'阶'} · ${t.level||0}级`;
@@ -437,7 +461,7 @@ h1{font-size:clamp(22px,3vw,32px);margin:0 0 8px}.sub{color:var(--muted);margin:
   async function swapAction(a,b){
     if(busy||!Number.isInteger(a)||!Number.isInteger(b)||a===b)return;
     const ta=board[a],tb=board[b];
-    if(ta&&tb&&ta.tier===tb.tier&&stateSignature(ta)===stateSignature(tb)){
+    if(ta&&tb&&ta.tier===tb.tier&&(ta.level||0)===(tb.level||0)&&stateSignature(ta)===stateSignature(tb)){ 
       selected=null;render();$('log').textContent='你交换了两个阶级与状态完全相同的棋子，不扣步数。';return;
     }
     busy=true;selected=null;turnCount++;
@@ -451,11 +475,32 @@ h1{font-size:clamp(22px,3vw,32px);margin:0 0 8px}.sub{color:var(--muted);margin:
   }
   function tickCooldownsSafe(){updateSkillUI()}
   function start(){
-    turnCount=0;energy=0;activeCommanderEffects=[[],[],[],[]];tier2Refills=0;frontBoostRefills=0;refillQueue=[];
+    turnCount=0;commanderEnergy=[0,0,0,0];for(const k of Object.keys(BOARD_SKILLS))BOARD_SKILLS[k]=0;activeCommanderEffects=[[],[],[],[]];tier2Refills=0;frontBoostRefills=0;refillQueue=[];
     party=[[],[],[],[]];selected=null;busy=false;swapAnim.clear();matchAnim.clear();refillAnim.clear();popAnim.clear();refillDelay.clear();
     let tries=0;do{initialBoard();tries++}while((findLines().h.length||findLines().v.length)&&tries<100);
-    $('setup').style.display='none';$('game').style.display='block';$('log').textContent='游戏开始！拖动或点击两个棋子交换。同阶消除升一阶，混阶不升阶并增加主将技能槽。';render();
+    $('setup').style.display='none';$('game').style.display='block';$('log').textContent='游戏开始！拖动或依次点击两个棋子交换。对应角色消除混阶棋子时，该主将单独充能；盘面技能各自冷却 10 回合。';render();
   }
+  // 使用 document 级 Pointer Events：手指离开原棋子后仍持续追踪，避免 Safari 的 pointer capture 让 elementFromPoint 永远命中起点。
+  document.addEventListener('pointermove',e=>{
+    if(!touchDrag||e.pointerType!=='touch')return;
+    if(!touchDrag.moved&&Math.hypot(e.clientX-touchDrag.startX,e.clientY-touchDrag.startY)<7)return;
+    if(!touchDrag.moved){
+      touchDrag.moved=true;
+      const source=$('board').querySelector(`[data-index="${touchDrag.from}"]`);
+      if(source){const rect=source.getBoundingClientRect();const ghost=source.cloneNode(true);ghost.classList.remove('selected','swap-anim','match-anim','refill-anim');ghost.classList.add('flyer');ghost.style.left=rect.left+'px';ghost.style.top=rect.top+'px';ghost.style.width=rect.width+'px';ghost.style.height=rect.height+'px';ghost.style.opacity='.72';ghost.style.transform='scale(1.08)';document.body.appendChild(ghost);touchDrag.ghost=ghost;source.style.opacity='.28'}
+    }
+    if(touchDrag.ghost){touchDrag.ghost.style.left=(e.clientX-touchDrag.offsetX)+'px';touchDrag.ghost.style.top=(e.clientY-touchDrag.offsetY)+'px'}
+    e.preventDefault();
+  },{passive:false});
+  document.addEventListener('pointerup',e=>{
+    if(!touchDrag||e.pointerType!=='touch')return;
+    const drag=touchDrag;touchDrag=null;
+    const source=$('board').querySelector(`[data-index="${drag.from}"]`);
+    if(drag.ghost)drag.ghost.remove();if(source)source.style.opacity='';
+    if(drag.moved){suppressClick=true;const target=document.elementFromPoint(e.clientX,e.clientY)?.closest('.tile');if(target){const to=Number(target.dataset.index);if(Number.isInteger(to)&&to!==drag.from)swapAction(drag.from,to)}setTimeout(()=>{suppressClick=false},450)}
+  });
+  document.addEventListener('pointercancel',()=>{if(touchDrag){const source=$('board').querySelector(`[data-index="${touchDrag.from}"]`);touchDrag.ghost?.remove();if(source)source.style.opacity='';touchDrag=null}});
+  $('boardSkills').addEventListener('click',e=>{const btn=e.target.closest('[data-skill]');if(btn)useBoardSkill(btn.dataset.skill)});
   // iOS Safari：触摸棋盘或拖动头像时禁止页面跟随手指滚动。
   document.addEventListener('touchmove',e=>{
     if($('game').style.display!=='none' && (touchDrag || e.target.closest?.('.board'))){e.preventDefault();}
